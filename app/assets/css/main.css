@@ -8,22 +8,138 @@
 /* "container" is the theme's own wrapper class (styled by /legacy.css), not Tailwind's container utility. */
 @source not inline("container");
 
-@theme {
-  --font-sans: "IRANSans", "broya", ui-sans-serif, system-ui, sans-serif;
-  --font-mitra: "bmitra", "IRANSans", sans-serif;
-  --color-navy: #001c54;
-  --color-mint: #63c6ae;
-  --color-teal: #33bb9d;
-  --color-jade: #38bb9d;
+/* Vazirmatn (SIL OFL 1.1, see ../fonts/vazirmatn/OFL.txt), self-hosted. */
+@font-face { font-family: "Vazirmatn"; font-style: normal; font-weight: 300; font-display: swap; src: url("../fonts/vazirmatn/Vazirmatn-Light.woff2") format("woff2"); }
+@font-face { font-family: "Vazirmatn"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/vazirmatn/Vazirmatn-Regular.woff2") format("woff2"); }
+@font-face { font-family: "Vazirmatn"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/vazirmatn/Vazirmatn-Medium.woff2") format("woff2"); }
+@font-face { font-family: "Vazirmatn"; font-style: normal; font-weight: 600; font-display: swap; src: url("../fonts/vazirmatn/Vazirmatn-SemiBold.woff2") format("woff2"); }
+@font-face { font-family: "Vazirmatn"; font-style: normal; font-weight: 700; font-display: swap; src: url("../fonts/vazirmatn/Vazirmatn-Bold.woff2") format("woff2"); }
+@font-face { font-family: "Vazirmatn"; font-style: normal; font-weight: 800; font-display: swap; src: url("../fonts/vazirmatn/Vazirmatn-ExtraBold.woff2") format("woff2"); }
+
+/* Two seed colors per theme (set on <html data-theme>): --seed-brand is the accent, --seed-deep the dark companion.
+   Every shade below is mixed from them, so a theme only has to name those two. */
+@theme static {
+  --font-sans: "Vazirmatn", ui-sans-serif, system-ui, sans-serif;
+  --font-mitra: var(--font-sans);
+
+  /* Type scale (ratio ~1.2, body 16px). Headings shrink on narrow screens. */
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.6;
+  --text-body: 1rem;
+  --text-body--line-height: 1.9;
+  --text-lead: 1.125rem;
+  --text-lead--line-height: 1.8;
+  --text-h6: 1rem;
+  --text-h6--line-height: 1.6;
+  --text-h5: 1.125rem;
+  --text-h5--line-height: 1.6;
+  --text-h4: 1.25rem;
+  --text-h4--line-height: 1.5;
+  --text-h3: clamp(1.375rem, 1.2rem + 0.6vw, 1.5rem);
+  --text-h3--line-height: 1.45;
+  --text-h2: clamp(1.5rem, 1.25rem + 1vw, 1.875rem);
+  --text-h2--line-height: 1.4;
+  --text-h1: clamp(1.75rem, 1.4rem + 1.5vw, 2.25rem);
+  --text-h1--line-height: 1.35;
+
+  --color-brand-50: color-mix(in oklab, var(--seed-brand) 8%, white);
+  --color-brand-100: color-mix(in oklab, var(--seed-brand) 16%, white);
+  --color-brand-200: color-mix(in oklab, var(--seed-brand) 32%, white);
+  --color-brand-300: color-mix(in oklab, var(--seed-brand) 52%, white);
+  --color-brand-400: color-mix(in oklab, var(--seed-brand) 76%, white);
+  --color-brand-500: var(--seed-brand);
+  --color-brand-600: color-mix(in oklab, var(--seed-brand) 84%, black);
+  --color-brand-700: color-mix(in oklab, var(--seed-brand) 68%, black);
+  --color-brand-800: color-mix(in oklab, var(--seed-brand) 52%, black);
+  --color-brand-900: color-mix(in oklab, var(--seed-brand) 38%, black);
+  --color-brand-950: color-mix(in oklab, var(--seed-brand) 26%, black);
+
+  --color-deep-50: color-mix(in oklab, var(--seed-deep) 6%, white);
+  --color-deep-100: color-mix(in oklab, var(--seed-deep) 12%, white);
+  --color-deep-200: color-mix(in oklab, var(--seed-deep) 24%, white);
+  --color-deep-300: color-mix(in oklab, var(--seed-deep) 40%, white);
+  --color-deep-400: color-mix(in oklab, var(--seed-deep) 58%, white);
+  --color-deep-500: color-mix(in oklab, var(--seed-deep) 74%, white);
+  --color-deep-600: color-mix(in oklab, var(--seed-deep) 86%, white);
+  --color-deep-700: color-mix(in oklab, var(--seed-deep) 93%, white);
+  --color-deep-800: color-mix(in oklab, var(--seed-deep) 97%, white);
+  --color-deep-900: var(--seed-deep);
+  --color-deep-950: color-mix(in oklab, var(--seed-deep) 75%, black);
+
+  /* Original site color names, now theme-driven. */
+  --color-mint: var(--color-brand-400);
+  --color-teal: var(--color-brand-500);
+  --color-jade: var(--color-brand-500);
+  --color-navy: var(--seed-navy);
+
+  /* Surfaces and text, swapped for dark mode below. */
+  --color-surface: var(--surface);
+  --color-subtle: var(--surface-subtle);
+  --color-ink: var(--tone-ink);
+  --color-body: var(--tone-body);
+  --color-muted: var(--tone-muted);
 }
 
 :root {
-  --ui-primary: var(--color-teal);
+  /* Default theme, taken from the original site: teal #33bb9d (mint #63c6ae for hovers) on navy #001c54. */
+  --seed-brand: #33bb9d;
+  --seed-deep: #001c54;
+  --seed-navy: var(--seed-deep);
+  --surface: #fff;
+  --surface-subtle: #f4f4f4;
+  --tone-ink: #333;
+  --tone-body: #666;
+  --tone-muted: #888;
+}
+:root[data-theme="ocean"] { --seed-brand: #1e88e5; --seed-deep: #0b2545; }
+:root[data-theme="sunset"] { --seed-brand: #e8590c; --seed-deep: #3d0c26; }
+:root[data-theme="royal"] { --seed-brand: #7c4dff; --seed-deep: #1f1147; }
+
+.dark {
+  --seed-navy: var(--color-deep-200);
+  --surface: #12151c;
+  --surface-subtle: #1c212b;
+  --tone-ink: #e8eaee;
+  --tone-body: #b8bdc7;
+  --tone-muted: #8a909c;
+  --ui-bg: var(--surface);
+  color-scheme: dark;
 }
 
 body {
-  background: #fff;
-  color: #777;
-  font-size: 13px;
-  line-height: 20px;
+  background: var(--surface);
+  color: var(--tone-body);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: var(--text-body--line-height);
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  /* Rendered WordPress content: one font and one type scale. Icon fonts keep their own family. */
+  #main :where(*:not(i, .fa, [class^="fa-"], [class*=" fa-"], [class*="eicon"], [class*="genericon"], [class*="dashicons"], [class*="glyphicon"], [class^="icon-"], [class*=" icon-"])) {
+    font-family: var(--font-sans);
+  }
+  #main :where(p, li, dd, dt, td, th, blockquote, label) {
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+  }
+  #main :where(h1, h2, h3, h4, h5, h6) { color: var(--tone-ink); font-weight: 700; }
+  #main :where(h1) { font-size: var(--text-h1); line-height: var(--text-h1--line-height); }
+  #main :where(h2) { font-size: var(--text-h2); line-height: var(--text-h2--line-height); }
+  #main :where(h3) { font-size: var(--text-h3); line-height: var(--text-h3--line-height); }
+  #main :where(h4) { font-size: var(--text-h4); line-height: var(--text-h4--line-height); }
+  #main :where(h5) { font-size: var(--text-h5); line-height: var(--text-h5--line-height); }
+  #main :where(h6) { font-size: var(--text-h6); line-height: var(--text-h6--line-height); }
+  #main :where(figcaption, small, .wp-caption-text, .entry-meta) { font-size: var(--text-caption); line-height: var(--text-caption--line-height); }
+  #main :where(a:not([class*="button"], .readmore)) { color: var(--color-brand-600); }
+  #main :where(a:not([class*="button"], .readmore)):hover { color: var(--color-brand-500); }
+
+  /* Dark mode for legacy content: neutral text and backgrounds, images untouched. */
+  .dark .wrapper { background-color: var(--surface); }
+  .dark #main :where(p, li, dd, dt, td, th, span, div, strong, b, em, label, blockquote, figcaption) { color: var(--tone-body); }
+  .dark #main :where(h1, h2, h3, h4, h5, h6) { color: var(--tone-ink); }
+  .dark #main :where(a:not([class*="button"], .readmore)) { color: var(--color-brand-400); }
+  .dark #main :where(div, section, article, aside, header, footer, table, tr, td, th, ul, li, figure, .container, #primary, #content) { background-color: transparent; border-color: rgb(255 255 255 / 0.12); }
+  .dark #main :where(input, textarea, select) { background-color: var(--surface-subtle); color: var(--tone-ink); border-color: rgb(255 255 255 / 0.16); }
 }

@@ -14,13 +14,17 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   // Some original uploads start with "-", which Nuxt would otherwise skip when copying public/.
   ignorePrefix: '~skip-',
-  ui: { fonts: false, colorMode: false },
+  ui: { fonts: false, colorMode: true },
+  // Light stays the default so the site looks like the original until a visitor picks another mode.
+  colorMode: { preference: 'light', fallback: 'light', storageKey: 'bp-color-mode' },
   app: {
     head: {
       htmlAttrs: { lang: 'fa-IR', dir: 'rtl' },
       meta: [{ name: 'viewport', content: 'width=device-width' }],
       // Declares the layer order before any stylesheet loads, so /legacy.css lands below Tailwind's base and utilities.
       style: [{ innerHTML: '@layer theme, base, legacy, components, utilities;', tagPriority: 'critical' }],
+      // Applies the saved color theme before first paint (see composables/useSiteTheme.ts).
+      script: [{ innerHTML: `try{var t=localStorage.getItem('bp-theme');if(t&&t!=='bekr')document.documentElement.dataset.theme=t}catch(e){}`, tagPriority: 'critical' }],
       link: [
         { rel: 'stylesheet', href: '/legacy.css', tagPriority: 'high' },
         { rel: 'icon', href: '/wp-content/uploads/2019/07/cropped-LOGO-Right-Blue-1-32x32.png', sizes: '32x32' },

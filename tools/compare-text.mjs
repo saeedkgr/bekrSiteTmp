@@ -5,7 +5,7 @@ import { join } from 'node:path'
 const ROOT = join(import.meta.dirname, '..')
 const index = JSON.parse(await readFile(join(ROOT, 'data/index.json'), 'utf8'))
 const text = html => {
-  const s = html.indexOf('<div id="content">'), e = [html.indexOf('<div id="secondary"'), html.indexOf('<footer id="colophon"'), html.indexOf('<footer class="bg-white')].filter(i => i > 0).sort((x, y) => x - y)[0]
+  const s = html.indexOf('<div id="content">'), e = [html.indexOf('<div id="secondary"'), html.indexOf('<footer id="colophon"'), html.indexOf('<footer class="bg-surface')].filter(i => i > 0).sort((x, y) => x - y)[0]
   return html.slice(s, e > s ? e : undefined)
     .replace(/<!--[\s\S]*?-->/g, '').replace(/<(script|style|noscript)[\s\S]*?<\/\1>/g, '').replace(/<[^>]+>/g, ' ')
     .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(+n)).replace(/&#x([\da-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n, 16)))

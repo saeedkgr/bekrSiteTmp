@@ -32,6 +32,16 @@ Nuxt 4.6 needs Node.js 22.21 or newer.
 - **Redirects**: old URLs the WordPress site redirected are in `data/redirects.json` and become Nuxt
   route rules. The four `page-sideBar.php` pages (`/sidebar/`, `/sidebar14/`, `/sidebar-v14/`,
   `/sidebar-old/`) are standalone HTML documents copied as-is.
+- **Typography**: Vazirmatn (OFL) is self-hosted from `app/assets/fonts/vazirmatn/` in six weights
+  (300–800). The type scale lives in `app/assets/css/main.css` as `text-caption`, `text-body`,
+  `text-lead` and `text-h1`…`text-h6`, and is applied to the rendered WordPress content in the
+  `components` layer, above `legacy`.
+- **Themes and dark mode**: each theme is two seed colors on `<html data-theme>` (`bekr` default teal and
+  navy from the original site, `ocean`, `sunset`, `royal`); every shade of the `brand` (Nuxt UI primary)
+  and `deep` (secondary) palettes is mixed from them in `main.css`. Dark mode is Nuxt UI color mode
+  (light by default). Visitors pick both from the palette button in the header (`ThemeSwitcher.vue`);
+  the choice is kept in `localStorage` and applied before first paint. To add a theme, add a
+  `:root[data-theme="…"]` rule in `main.css` and an entry in `app/composables/useSiteTheme.ts`.
 
 ## Known differences from the live site
 

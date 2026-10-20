@@ -23,7 +23,7 @@ const overlayWidths = [1160, 1180, 1190, 1180, 1160]
       :ui="{ item: 'basis-full ps-0', container: 'ms-0', prev: 'sm:start-[15px] start-[15px]', next: 'sm:end-[15px] end-[15px]' }"
       class="relative w-full"
     >
-      <div class="relative aspect-[1366/693] w-full overflow-hidden bg-white">
+      <div class="relative aspect-[1366/693] w-full overflow-hidden bg-surface">
         <img
           :src="item.image"
           :alt="item.alt"
@@ -51,17 +51,17 @@ const overlayWidths = [1160, 1180, 1190, 1180, 1160]
       <figure
         v-for="p in s.products"
         :key="p.title"
-        class="mt-0.5 mb-[30px] bg-white text-center shadow-[0_0_4px_1px_#39bb9d]"
+        class="mt-0.5 mb-[30px] bg-surface text-center shadow-[0_0_4px_1px_var(--color-teal)]"
       >
         <NuxtLink :to="p.to ?? '/'">
           <img :src="p.image" :srcset="p.srcset || undefined" sizes="182px" :alt="p.alt" width="182" height="200" loading="lazy" class="mx-auto h-[200px] w-[182px] object-contain p-2.5">
         </NuxtLink>
-        <figcaption class="pt-2.5 text-[18px] leading-[30px] text-black">
+        <figcaption class="pt-2.5 text-[18px] leading-[30px] text-ink">
           {{ p.title }}
           <NuxtLink
             v-if="p.to"
             :to="p.to"
-            class="mt-[31px] block bg-[#001e3a] py-3 text-[20px] leading-[30px] text-white transition-colors hover:bg-teal"
+            class="mt-[31px] block bg-deep-900 py-3 text-[20px] leading-[30px] text-white transition-colors hover:bg-teal"
           >
             {{ p.button }}
           </NuxtLink>
@@ -84,13 +84,13 @@ const overlayWidths = [1160, 1180, 1190, 1180, 1160]
       dots
       :autoplay="{ delay: s.carouselConf.autoplay_interval ?? 4000 }"
       :ui="{ item: 'basis-full sm:basis-1/2 lg:basis-1/3 ps-5', container: '-ms-5', dots: '-bottom-[30px] gap-1', dot: 'size-2.5 rounded-full bg-[#555] data-[state=active]:bg-[#03a9f5]', prev: 'sm:start-0 start-0 rounded-none', next: 'sm:end-0 end-0 rounded-none' }"
-      :prev="{ color: 'neutral', variant: 'outline', class: 'h-[49px] w-[42px] justify-center rounded-none border-2 border-black bg-white/40 text-black ring-0' }"
-      :next="{ color: 'neutral', variant: 'outline', class: 'h-[49px] w-[42px] justify-center rounded-none border-2 border-black bg-white/40 text-black ring-0' }"
+      :prev="{ color: 'neutral', variant: 'outline', class: 'h-[49px] w-[42px] justify-center rounded-none border-2 border-black bg-surface/40 text-black ring-0' }"
+      :next="{ color: 'neutral', variant: 'outline', class: 'h-[49px] w-[42px] justify-center rounded-none border-2 border-black bg-surface/40 text-black ring-0' }"
       class="mb-[30px]"
     >
       <NuxtLink
         :to="item.to"
-        class="group relative block h-[400px] bg-[#f1f1f1] bg-cover bg-center"
+        class="group relative block h-[400px] bg-subtle bg-cover bg-center"
         :style="{ backgroundImage: `url('${item.image}')` }"
       >
         <span class="absolute inset-0 bg-linear-to-b from-transparent from-40% to-black" />

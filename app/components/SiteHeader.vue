@@ -23,10 +23,10 @@ watch(() => route.fullPath, () => { open.value = false })
 </script>
 
 <template>
-  <header class="relative z-40 border-b border-black/10 bg-white">
+  <header class="relative z-40 border-b border-default bg-surface">
     <div class="flex h-[50px] items-start ps-[22px] pe-4 max-md:h-auto max-md:flex-wrap max-md:items-center max-md:py-2">
       <NuxtLink to="/" :title="site?.name" rel="home" class="mt-[2px] block shrink-0 max-md:mt-0">
-        <img :src="site?.logo" :alt="site?.name" width="125" height="50" class="h-[50px] w-[125px]">
+        <img :src="site?.logo" :alt="site?.name" width="125" height="50" class="h-[50px] w-[125px] dark:invert dark:hue-rotate-180">
       </NuxtLink>
 
       <!-- Desktop navigation -->
@@ -43,12 +43,12 @@ watch(() => route.fullPath, () => { open.value = false })
             </component>
             <ul
               v-if="item.children.length"
-              class="invisible absolute top-[60px] right-0 z-50 w-[190px] border-t-4 border-mint bg-white opacity-0 shadow-[0_4px_8px_rgba(0,0,0,0.2)] group-hover:visible group-hover:opacity-100"
+              class="invisible absolute top-[60px] right-0 z-50 w-[190px] border-t-4 border-mint bg-surface opacity-0 shadow-[0_4px_8px_rgba(0,0,0,0.2)] group-hover:visible group-hover:opacity-100"
             >
               <li v-for="child in item.children" :key="child.label">
                 <NuxtLink
                   :to="child.to ?? '/'"
-                  class="block px-2.5 py-1.5 font-mitra text-[18px] leading-5 font-normal text-navy hover:bg-[#f9f9f9] hover:text-mint"
+                  class="block px-2.5 py-1.5 font-mitra text-[18px] leading-5 font-normal text-navy hover:bg-subtle hover:text-mint"
                 >
                   {{ child.label }}
                 </NuxtLink>
@@ -58,29 +58,31 @@ watch(() => route.fullPath, () => { open.value = false })
         </ul>
       </nav>
 
+      <ThemeSwitcher class="ms-auto mt-[9px] max-md:mt-0" />
+
       <!-- Mobile navigation -->
       <UButton
-        class="ms-auto md:hidden"
+        class="md:hidden"
         color="neutral"
         variant="ghost"
         icon="i-lucide-menu"
         aria-label="Responsive Menu"
         @click="open = !open"
       />
-      <ul v-if="open" class="w-full basis-full border-t-4 border-mint bg-white md:hidden">
+      <ul v-if="open" class="w-full basis-full border-t-4 border-mint bg-surface md:hidden">
         <template v-for="item in [...(site?.menu ?? [])].reverse()" :key="item.label">
           <li>
             <component
               :is="item.to ? NuxtLink : 'span'"
               :to="item.to ?? undefined"
-              class="block border-b border-black/5 px-3 py-2 font-mitra text-[18px] font-bold"
+              class="block border-b border-default px-3 py-2 font-mitra text-[18px] font-bold"
               :class="isActive(item) ? 'text-mint' : 'text-navy'"
             >
               {{ item.label }}
             </component>
           </li>
           <li v-for="child in item.children" :key="child.label">
-            <NuxtLink :to="child.to ?? '/'" class="block border-b border-black/5 px-6 py-2 font-mitra text-[18px] text-navy hover:text-mint">
+            <NuxtLink :to="child.to ?? '/'" class="block border-b border-default px-6 py-2 font-mitra text-[18px] text-navy hover:text-mint">
               {{ child.label }}
             </NuxtLink>
           </li>
