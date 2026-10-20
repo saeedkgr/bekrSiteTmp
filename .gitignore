@@ -1,0 +1,8 @@
+node_modules
+.nuxt
+.output
+.data
+dist
+*.log
+# Raw download of the WordPress site (~300 MB); recreate with npm run mirror
+mirror/

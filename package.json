@@ -1,0 +1,30 @@
+{
+  "name": "bekrpardazan-com",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "mirror": "node tools/mirror.mjs && node tools/mirror-extra.mjs && node tools/find-redirects.mjs",
+    "import": "node tools/import.mjs",
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "node tools/serve-static.mjs 4000",
+    "check": "node tools/check-links.mjs && node tools/compare-text.mjs",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxt/ui": "^4.12.0",
+    "nuxt": "^4.6.2",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2",
+    "vue": "^3.5.44",
+    "vue-router": "^5.4.0"
+  },
+  "devDependencies": {
+    "lightningcss": "^1.33.0"
+  },
+  "engines": {
+    "node": ">=22.21.0"
+  },
+  "packageManager": "pnpm@10.25.0+sha512.5e82639027af37cf832061bcc6d639c219634488e0f2baebe785028a793de7b525ffcd3f7ff574f5e9860654e098fe852ba8ac5dd5cefe1767d23a020a92f501"
+}

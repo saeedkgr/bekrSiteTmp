@@ -1,0 +1,29 @@
+/* Layer order. The original WordPress/Elementor/theme CSS is served as /legacy.css inside the "legacy" layer:
+   Tailwind utilities always win over it, while rendered page content keeps its original look. */
+@layer theme, base, legacy, components, utilities;
+
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+/* "container" is the theme's own wrapper class (styled by /legacy.css), not Tailwind's container utility. */
+@source not inline("container");
+
+@theme {
+  --font-sans: "IRANSans", "broya", ui-sans-serif, system-ui, sans-serif;
+  --font-mitra: "bmitra", "IRANSans", sans-serif;
+  --color-navy: #001c54;
+  --color-mint: #63c6ae;
+  --color-teal: #33bb9d;
+  --color-jade: #38bb9d;
+}
+
+:root {
+  --ui-primary: var(--color-teal);
+}
+
+body {
+  background: #fff;
+  color: #777;
+  font-size: 13px;
+  line-height: 20px;
+}

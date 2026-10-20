@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0">
+<title>Page not found &#8211; LandingKit LandingPress</title>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="LandingKit LandingPress"/>
+<link rel="alternate" type="application/rss+xml" title="LandingKit LandingPress &raquo; Feed" href="https://landingpress.landingkit.co/feed/" />
+<link rel="alternate" type="application/rss+xml" title="LandingKit LandingPress &raquo; Comments Feed" href="https://landingpress.landingkit.co/comments/feed/" />
+<link rel='stylesheet' id='font-awesome-css'  href='https://landingpress.landingkit.co/wp-content/themes/landingpress-wp/assets/lib/font-awesome/css/font-awesome.min.css?ver=4.7.0' type='text/css' media='all' />
+<link rel='stylesheet' id='wp-block-library-css'  href='https://landingpress.landingkit.co/wp-includes/css/dist/block-library/style.min.css?ver=5.3.3' type='text/css' media='all' />
+<link rel='stylesheet' id='landingpress-css'  href='https://landingpress.landingkit.co/wp-content/themes/landingpress-wp/style.css?ver=2.9.5.3' type='text/css' media='all' />
+</head>
+<body class="error404 page-sidebar-inactive header-active footer-active elementor-default">
+<a class="skip-link screen-reader-text" href="#content">Skip to content</a>
+<div class="site-canvas">
+<div id="page" class="site-container">
+	<header id="masthead" class="site-header">
+	<div class="site-branding clearfix site-header-align-center site-header-image-inactive">
+				<div class="container">
+			<div class="site-title clearfix">
+									<div class="site-title">
+						<a class="header-text" href="https://landingpress.landingkit.co/" rel="home">
+							LandingKit LandingPress						</a>
+					</div>
+					<p class="site-description">Just another WordPress site</p>
+											</div>
+		</div>
+	</div>
+	</header>
+<div class="site-inner">
+		<div id="content" class="site-content">
+		<div class="container">
+			<div id="primary" class="content-area">
+	<main id="main" class="site-main">
+	<article class="entry no-results not-found">
+	<header class="entry-header">
+		<h1 class="entry-title">Nothing Found</h1>
+	</header>
+	<div class="entry-content">
+			<p>It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps searching can help.</p>
+		<form role="search" method="get" class="search-form" action="https://landingpress.landingkit.co/">
+				<label>
+					<span class="screen-reader-text">Search for:</span>
+					<input type="search" class="search-field" placeholder="Search &hellip;" value="" name="s" />
+				</label>
+				<input type="submit" class="search-submit" value="Search" />
+			</form>		</div>
+</article>
+	</main>
+</div>
+					</div>
+	</div>
+	</div>	<footer id="colophon" class="site-footer">
+		<div class="container">
+						<div class="site-info">
+									Copyright &copy; 2020 LandingKit LandingPress							</div>
+		</div>
+	</footer>
+</div></div><div id="back-to-top"><i class="fa fa-angle-up"></i></div><script type='text/javascript' src='https://landingpress.landingkit.co/wp-includes/js/jquery/jquery.js?ver=1.12.4-wp'></script>
+<script type='text/javascript' src='https://landingpress.landingkit.co/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.4.1' defer='defer'></script>
+<script type='text/javascript' src='https://landingpress.landingkit.co/wp-content/themes/landingpress-wp/assets/js/script.min.js?ver=2.9.5.3' defer='defer'></script>
+
+<!--[if LandingPress]></body></html><![endif]-->
+<!-- </body></html> -->
+</body>
+</html>
