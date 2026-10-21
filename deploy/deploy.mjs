@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Deploys the static Nuxt build to cPanel (see deploy/DEPLOY.md).
+// Deploys the static Nuxt build to cPanel (see DEPLOY.md).
 //
 //   pnpm run deploy                 build, pack, upload, swap in
 //   pnpm run deploy --skip-build    reuse the current .output/public
@@ -42,7 +42,7 @@ function loadEnv(file) {
   return env
 }
 
-const env = { ...loadEnv(path.join(root, '.env.deploy')), ...process.env }
+const env = { ...loadEnv(path.join(import.meta.dirname, '.env.deploy')), ...process.env }
 const cfg = {
   host: env.CPANEL_HOST,
   port: Number(env.CPANEL_PORT || 2083),
@@ -59,7 +59,7 @@ const prev = `${home}/deploy-prev`
 
 if (!dryRun) {
   for (const key of ['CPANEL_HOST', 'CPANEL_USER', 'CPANEL_TOKEN'])
-    if (!env[key]) fail(`${key} is missing. Copy .env.deploy.example to .env.deploy and fill it in.`)
+    if (!env[key]) fail(`${key} is missing. Copy deploy/.env.deploy.example to deploy/.env.deploy and fill it in.`)
 }
 
 // ---------- cPanel API ----------
@@ -177,7 +177,7 @@ function findTar() {
     .map((git) => path.resolve(path.dirname(git), '..'))
   const candidates = [env.GNU_TAR, ...gitDirs.map((d) => path.join(d, 'usr', 'bin', 'tar.exe')), 'C:\\Program Files\\Git\\usr\\bin\\tar.exe']
   const tar = candidates.find((p) => p && existsSync(p))
-  if (!tar) throw new Error('GNU tar not found; install Git for Windows or set GNU_TAR in .env.deploy')
+  if (!tar) throw new Error('GNU tar not found; install Git for Windows or set GNU_TAR in deploy/.env.deploy')
   return tar
 }
 

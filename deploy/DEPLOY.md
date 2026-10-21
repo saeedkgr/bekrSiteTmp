@@ -89,9 +89,9 @@ redirects, the 404 page, `/old/`, `/old/wp-admin/`) and in a browser.
 
 ## Redeploying the Nuxt site with `pnpm run deploy`
 
-[`scripts/deploy.mjs`](../scripts/deploy.mjs) does the whole redeploy from this PC.
+[`deploy/deploy.mjs`](deploy.mjs) does the whole redeploy from this PC.
 
-Setup, once: copy [`.env.deploy.example`](../.env.deploy.example) to `.env.deploy` and put a
+Setup, once: copy [`deploy/.env.deploy.example`](.env.deploy.example) to `deploy/.env.deploy` and put a
 cPanel API token in `CPANEL_TOKEN` (cPanel → Security → Manage API Tokens). `.env.deploy` is in
 `.gitignore`; never commit it. Git for Windows must be installed: the script packs with its GNU
 `tar`, because Windows' own `tar.exe` crashes on the Persian folder names.
