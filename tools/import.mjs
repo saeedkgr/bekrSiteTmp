@@ -8,7 +8,7 @@
 // Usage: node tools/import.mjs
 import { readFile, writeFile, mkdir, cp, rm, readdir, stat } from 'node:fs/promises'
 import { existsSync, readdirSync } from 'node:fs'
-import { join, dirname } from 'node:path'
+import { join, dirname, relative } from 'node:path'
 import { transform } from 'lightningcss'
 
 const ROOT = join(import.meta.dirname, '..')
@@ -120,6 +120,26 @@ function movedFontUrls(css) {
     .replace(/src:\s*,\s*/g, 'src: ')
     .replace(/src:\s*(;|})/g, '$1')
 }
+
+// The child theme's IRANSans and Broya are replaced by the app's Vazirmatn (app/assets/fonts/vazirmatn, declared in
+// main.css): their @font-face rules go, every font-family that names them uses --font-sans, and their files are not copied.
+const REPLACED_FONTS = new Set(['iransans', 'iransanslight', 'broya'])
+const isReplacedFontFile = rel => /^(IRANSans(\/|$)|broya\.)/i.test(rel)
+function replaceFonts(css) {
+  return css
+    .replace(/@font-face\s*\{[^}]*\}/g, m => {
+      const family = /font-family:\s*['"]?([^;'"}]+)/.exec(m)?.[1].trim().toLowerCase()
+      return REPLACED_FONTS.has(family) ? '' : m
+    })
+    .replace(/font-family:\s*([^;}]+)/g, (m, list) => {
+      const names = list.split(',').map(n => n.trim())
+      if (!names.some(n => REPLACED_FONTS.has(n.replace(/['"]/g, '').toLowerCase()))) return m
+      const out = [...new Set(names.map(n => REPLACED_FONTS.has(n.replace(/['"]/g, '').toLowerCase()) ? 'var(--font-sans)' : n))]
+      return `font-family: ${out.join(', ')}`
+    })
+    // The `font` shorthand names them too ("font: 13px/20px broya, PT Sans, Genericons"); lightningcss would turn var() there into a quoted family name.
+    .replace(/(\bfont:[^;}]*?)\b(IRANSansLight|IRANSans|broya)\b/gi, '$1Vazirmatn')
+}
 // Elementor's widget, animation and Font Awesome stylesheets were linked page by page. They only style Elementor's
 // own classes, so they are bundled once: Font Awesome into the legacy bundle, the rest into
 // app/assets/css/wp-elementor-widgets.css. Swiper's are left out: WpCarousel.vue replaces the carousels.
@@ -210,7 +230,7 @@ async function loadCss(p) {
   css = rewrite(css)
   // Fix broken font format hints in the child theme so browsers pick the right file
   css = css.replace(/format\('otf'\)/g, "format('opentype')").replace(/format\('ttf'\)/g, "format('truetype')")
-  css = movedFontUrls(css)
+  css = replaceFonts(movedFontUrls(css))
   // @import inside a file cannot be layered; inline-drop them (only google fonts in practice)
   css = css.replace(/@import[^;]+;/g, '')
   return `\n/* ${p} */\n${css}\n`
@@ -517,7 +537,8 @@ await cp(WP_CONTENT, join(ROOT, 'public/wp-content'), {
 for (const [from, name] of Object.entries(FONT_DIRS)) {
   const dest = join(ROOT, 'app/assets/fonts', name)
   await rm(dest, { recursive: true, force: true })
-  await cp(join(M, 'files', from), dest, { recursive: true })
+  const src = join(M, 'files', from)
+  await cp(src, dest, { recursive: true, filter: f => !isReplacedFontFile(relative(src, f).replaceAll('\\', '/')) })
 }
 // Point absolute URLs inside the copied stylesheets (per-post Elementor CSS, font CSS) at this site.
 async function* walkFiles(d) { for (const e of await readdir(d, { withFileTypes: true })) { const p = join(d, e.name); e.isDirectory() ? yield* walkFiles(p) : yield p } }

@@ -59,3 +59,29 @@ checks what still used those files and removes the folder from `public/`.
 - `npm run generate` builds without errors; the theme's "didn't resolve at build time" warnings are gone.
 - `npm run check` matches the text of all 774 pages (the same 7 missing files as before, also missing on the live site).
 - The dev server has to be restarted after the import adds new font folders, or Vite keeps serving the old URLs.
+
+## 5. replace IRANSans and Broya with Vazirmatn
+
+**Before:** the child theme's CSS set `font-family: IRANSans, broya` on almost every element (`html, body, div, span,
+... a`), and `broya` or `IRANSans` on `body`, `.slogan-wrap .slogan`, `.featured-text .featured-title`, `.page-title`,
+`#content .entry-title` and `.content-page`. The app's own Vazirmatn rules covered the page content, but the header and
+footer (about 75 elements on every page, such as menu links and footer headings) still drew in IRANSans.
+
+**After:** every one of those rules uses Vazirmatn, the self-hosted font in `app/assets/fonts/vazirmatn/` declared in
+`app/assets/css/main.css`.
+
+- `font-family` declarations that named IRANSans, IRANSansLight or broya now say `var(--font-sans)` (Vazirmatn with
+  its system fallbacks). The one `font` shorthand that named broya (`font: 13px/20px broya, PT Sans, Genericons`) now
+  names `Vazirmatn` directly, because the CSS cleaner would turn `var()` there into a quoted font name.
+- The `@font-face` rules for IRANSans, IRANSansLight and broya are removed.
+- Their files are no longer copied: `app/assets/fonts/interface-child/IRANSans/` (8 files), `BROYA.ttf` and `broya.woff`
+  are deleted. `interface-child/` keeps BMitra, BNazanin, Mj Moharram Bold and Genericons, which the theme CSS still
+  declares.
+- `tools/import.mjs`: new `REPLACED_FONTS`, `isReplacedFontFile()` and `replaceFonts()`, applied to every bundled
+  stylesheet.
+
+**Verification:** on the same 5 pages as section 4, the only computed-style change is `font-family` (IRANSans to
+Vazirmatn) on the same 75 header and footer elements on every page, plus one element whose width follows its text.
+Sizes, weights, colors and spacing are unchanged. Only Vazirmatn (and Font Awesome where icons are used) loads now,
+with no failed requests. `npm run generate` builds, the build has no IRANSans or Broya files or rules, and
+`npm run check` matches the text of all 774 pages.

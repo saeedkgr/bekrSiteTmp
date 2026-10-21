@@ -9650,7 +9650,7 @@ blockquote.wp-block-quote, .wp-block-quote.is-style-large cite, .wp-block-pullqu
 }
 
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
-  font-family: IRANSans, broya;
+  font-family: var(--font-sans);
   font-size: 100%;
   font-style: inherit;
   font-weight: inherit;
@@ -9737,11 +9737,6 @@ embed, iframe, object {
 }
 
 @font-face {
-  font-family: broya;
-  src: url("../fonts/interface-child/BROYA.ttf") format("truetype"), url("../fonts/interface-child/broya.woff") format("woff");
-}
-
-@font-face {
   font-family: bmitra;
   src: url("../fonts/interface-child/BMitra.ttf") format("truetype"), url("../fonts/interface-child/bmitra.woff") format("woff");
 }
@@ -9768,32 +9763,16 @@ embed, iframe, object {
   font-family: moharam-light;
 }
 
-@font-face {
-  font-family: IRANSansLight;
-  font-style: normal;
-  font-weight: 200;
-  src: url("../fonts/interface-child/IRANSans/WebFonts/fonts/eot/IRANSansWeb_UltraLight.eot");
-  src: url("../fonts/interface-child/IRANSans/WebFonts/fonts/eot/IRANSansWeb_UltraLight.eot") format("embedded-opentype"), url("../fonts/interface-child/IRANSans/WebFonts/fonts/woff2/IRANSansWeb_UltraLight.woff2") format("woff2"), url("../fonts/interface-child/IRANSans/WebFonts/fonts/woff/IRANSansWeb_UltraLight.woff") format("woff"), url("../fonts/interface-child/IRANSans/WebFonts/fonts/ttf/IRANSansWeb_UltraLight.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: IRANSans;
-  font-style: normal;
-  font-weight: normal;
-  src: url("../fonts/interface-child/IRANSans/WebFonts/fonts/eot/IRANSansWeb.eot");
-  src: url("../fonts/interface-child/IRANSans/WebFonts/fonts/eot/IRANSansWeb.eot") format("embedded-opentype"), url("../fonts/interface-child/IRANSans/WebFonts/fonts/woff2/IRANSansWeb.woff2") format("woff2"), url("../fonts/interface-child/IRANSans/WebFonts/fonts/woff/IRANSansWeb.woff") format("woff"), url("../fonts/interface-child/IRANSans/WebFonts/fonts/ttf/IRANSansWeb.ttf") format("truetype");
-}
-
 body, input, textarea {
   color: #777;
   word-wrap: break-word;
   direction: rtl;
-  font: 13px / 20px broya, PT Sans, Genericons;
+  font: 13px / 20px Vazirmatn, PT Sans, Genericons;
 }
 
 body {
+  font-family: var(--font-sans);
   background-color: #fff;
-  font-family: broya;
 }
 
 .wrapper {
@@ -10713,19 +10692,19 @@ a.more-link:hover {
   color: #fff;
   text-transform: uppercase;
   text-align: right;
-  font-family: broya;
   font-size: 30px;
   font-weight: bold;
   line-height: 37px;
+  font-family: var(--font-sans);
 }
 
 .slogan-wrap .slogan span {
   text-transform: none;
-  padding-top: 5px;
-  font-family: broya;
   font-size: 17px;
-  font-weight: bold;
   line-height: 24px;
+  font-family: var(--font-sans);
+  padding-top: 5px;
+  font-weight: bold;
   display: block;
 }
 
@@ -10761,12 +10740,12 @@ a.more-link:hover {
 .featured-text .featured-title {
   text-transform: uppercase;
   color: #fff;
-  background-color: #63c6aee6;
-  padding: 0 20px;
-  font-family: broya;
   font-size: 27px;
   font-weight: bold;
   line-height: 42px;
+  font-family: var(--font-sans);
+  background-color: #63c6aee6;
+  padding: 0 20px;
 }
 
 .featured-text .featured-title a {
@@ -10989,11 +10968,11 @@ a.more-link:hover {
 .page-title {
   color: #fff;
   float: right;
-  padding-top: 2px;
-  font-family: broya;
   font-size: 23pt;
   font-weight: bold;
   line-height: 29px;
+  font-family: var(--font-sans);
+  padding-top: 2px;
 }
 
 .page-title a {
@@ -11006,12 +10985,12 @@ a.more-link:hover {
 }
 
 #content .entry-title {
+  font-family: var(--font-sans);
   text-align: center;
   color: #38bb9d;
   margin-top: -5px;
   margin-right: 30px;
   padding-bottom: 5px;
-  font-family: IRANSans;
   font-size: 30px;
 }
 
@@ -11031,7 +11010,7 @@ a.more-link:hover {
 }
 
 .content-page {
-  font-family: IRANSans;
+  font-family: var(--font-sans);
 }
 
 .entry-meta, .entry-meta a {
