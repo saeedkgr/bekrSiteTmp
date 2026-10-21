@@ -9,7 +9,7 @@ and upload from the original site is included, at the same URLs.
 | Command | What it does |
 | --- | --- |
 | `npm run mirror` | Downloads the live site into `mirror/` (REST API data, rendered HTML of every URL, all `wp-content` files, and old-URL redirects). |
-| `npm run import` | Turns `mirror/` into the app's data: `public/_data/`, `public/wp-content/uploads/`, `app/assets/css/wp-content-view-legacy.css` and `wp-elementor-widgets.css`, the plugin and theme fonts in `app/assets/fonts/`, `data/`. |
+| `npm run import` | Turns `mirror/` into the app's data: `public/_data/`, `public/wp-uploads/` (the original `wp-content/uploads`), `app/assets/css/wp-content-view-legacy.css` and `wp-elementor-widgets.css`, the plugin and theme fonts in `app/assets/fonts/`, `data/`. |
 | `npm run dev` | Development server on http://localhost:3000. |
 | `npm run generate` | Builds the static site into `.output/public` (deploy that folder to any static host). |
 | `npm run preview` | Serves `.output/public` on http://localhost:4000. |
@@ -30,7 +30,8 @@ Nuxt 4.6 needs Node.js 22.21 or newer.
   Vite bundles it with the app CSS, together with the plugin and theme fonts (`app/assets/fonts/eicons/`,
   `font-awesome/`, `glyphicons/`, `font-awesome-4/`, `interface-child/`). Elementor's widget stylesheets are bundled into `app/assets/css/wp-elementor-widgets.css`
   in an `elementor` layer above the app's content styles. Nothing from `wp-content/plugins` or `wp-content/themes` is served from `public/`;
-  only the per-post Elementor CSS (`wp-content/uploads/elementor/css/`) is still loaded per route.
+  only the per-post Elementor CSS (`/wp-uploads/elementor/css/`) is still loaded per route. Uploads are served from
+  `/wp-uploads/` instead of `/wp-content/uploads/`; the import rewrites every link to them.
 - **Data**: one JSON file per URL in `public/_data/routes/` (named by an FNV-1a hash of the path, see
   `app/utils/routeId.ts`), plus `site.json` (menu, footer) and `search.json` (`/?s=` search).
 - **Redirects**: old URLs the WordPress site redirected are in `data/redirects.json` and become Nuxt

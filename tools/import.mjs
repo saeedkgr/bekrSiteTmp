@@ -2,7 +2,7 @@
 //   public/_data/routes/<id>.json  one file per public URL (page, post, archive), fetched by the app
 //   data/index.json         path -> route id + type (prerender list, sitemap)
 //   public/_data/site.json  menu and footer widgets; public/_data/search.json: search index
-//   public/wp-content/uploads/  uploads: images, documents and the per-post Elementor CSS
+//   public/wp-uploads/      wp-content/uploads: images, documents and the per-post Elementor CSS
 //   app/assets/css/wp-content-view-legacy.css  original WordPress/Elementor/theme CSS in the low-priority "legacy" layer
 //   app/assets/fonts/eicons/, app/assets/fonts/font-awesome/  Elementor's icon fonts, bundled with that CSS
 // Usage: node tools/import.mjs
@@ -42,7 +42,12 @@ function rewrite(html) {
     .replace(/https?:(?:\\\/\\\/|\/\/)(?:www\.)?bekrpardazan\.(?:com|net|ir)(?=[\/\\"'\s<])/g, '')
     .replace(/(^|["'(\s,])\/\/(?:www\.)?bekrpardazan\.(?:com|net|ir)(?=\/)/g, '$1')
     .replace(/https:\/\/s\.w\.org\/images\/core\/emoji\/[\d.]+\/svg\/([\w-]+)\.svg/g, '/emoji/$1.svg')
+    // Uploads are served from /wp-uploads/ (also inside JSON, where slashes are escaped as \/).
+    .replace(/(\\?\/)wp-content\1uploads\1/g, '$1wp-uploads$1')
 }
+// The public path of an original /wp-content/uploads/... path, and back (the mirror keeps the original layout).
+const toPublic = p => p.replace(/^\/wp-content\/uploads\//, '/wp-uploads/')
+const toMirror = p => p.replace(/^\/wp-uploads\//, '/wp-content/uploads/')
 
 function between(html, start, endMarkers) {
   const s = html.indexOf(start)
@@ -91,7 +96,7 @@ const FONT_DIRS = {
   '/wp-content/themes/interface-newChild/fonts/': 'interface-child',
 }
 // Every plugin and theme stylesheet a page used is bundled (below), their fonts are in app/assets/fonts and none of
-// their scripts is loaded, so nothing under wp-content/plugins or wp-content/themes is copied to public/.
+// their scripts is loaded, so pages link none of their files and neither folder is copied to public/.
 const isPluginFile = p => /^\/wp-content\/(plugins|themes)(\/|$)/.test(p)
 
 // The real name of `rel` under `dir`, matched without regard to letter case (the theme CSS asks for "bmitra.ttf",
@@ -158,7 +163,7 @@ function pageStyles(html, globalLinks) {
     if (!href || !/bekrpardazan/.test(href)) continue
     const p = new URL(href, BASE).pathname
     if (globalLinks.has(p) || isPluginFile(p)) continue
-    links.push(decodePath(p))
+    links.push(toPublic(decodePath(p)))
   }
   const inline = []
   for (const m of html.matchAll(/<style([^>]*)>([\s\S]*?)<\/style>/g)) {
@@ -487,7 +492,7 @@ await addRoute('/', 'home', {
 await save(join(OUT, 'site.json'), {
   name: decodeEntities(root.name),
   description: decodeEntities(root.description),
-  logo: '/wp-content/uploads/2019/08/logo.png',
+  logo: '/wp-uploads/2019/08/logo.png',
   menu,
   footer: {
     techPosts, socials, profiles, copyright,
@@ -502,7 +507,7 @@ await save(join(DATA, 'redirects.json'), Object.fromEntries(Object.entries(redir
 
 // Links to parts of the old server that were never WordPress (e.g. /wiki/) keep pointing at the live domain.
 {
-  const known = p => index[p] || redirects[p] || existsSync(join(M, 'files', p)) || p.startsWith('/wp-content/') || p.startsWith('/emoji/')
+  const known = p => index[p] || redirects[p] || existsSync(join(M, 'files', toMirror(p))) || p.startsWith('/wp-uploads/') || p.startsWith('/emoji/')
   for (const { id } of Object.values(index)) {
     const f = join(OUT, 'routes', id + '.json')
     const route = await json(f)
@@ -525,15 +530,10 @@ await save(join(OUT, 'search.json'), sorted.map(p => ({ title: decodeEntities(p.
 await save(join(DATA, 'index.json'), index)
 
 // ---------- static files ----------
+// Only wp-content/uploads is served, as /wp-uploads/; plugin and theme files are bundled from app/assets.
 await rm(join(ROOT, 'public/wp-content'), { recursive: true, force: true })
-const WP_CONTENT = join(M, 'files/wp-content')
-await cp(WP_CONTENT, join(ROOT, 'public/wp-content'), {
-  recursive: true,
-  filter: (src) => {
-    const p = '/wp-content' + src.slice(WP_CONTENT.length).replaceAll('\\', '/')
-    return !isPluginFile(p)
-  },
-})
+await rm(join(ROOT, 'public/wp-uploads'), { recursive: true, force: true })
+await cp(join(M, 'files/wp-content/uploads'), join(ROOT, 'public/wp-uploads'), { recursive: true })
 for (const [from, name] of Object.entries(FONT_DIRS)) {
   const dest = join(ROOT, 'app/assets/fonts', name)
   await rm(dest, { recursive: true, force: true })
@@ -542,7 +542,7 @@ for (const [from, name] of Object.entries(FONT_DIRS)) {
 }
 // Point absolute URLs inside the copied stylesheets (per-post Elementor CSS, font CSS) at this site.
 async function* walkFiles(d) { for (const e of await readdir(d, { withFileTypes: true })) { const p = join(d, e.name); e.isDirectory() ? yield* walkFiles(p) : yield p } }
-for await (const f of walkFiles(join(ROOT, 'public/wp-content'))) {
+for await (const f of walkFiles(join(ROOT, 'public/wp-uploads'))) {
   if (!f.endsWith('.css')) continue
   const css = await read(f)
   const out = rewrite(css)

@@ -10,7 +10,7 @@ const toTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
 </script>
 
 <template>
-  <footer class="bg-surface bg-[url('/wp-content/uploads/2020/07/page-header-box-03.png')] text-muted dark:bg-none">
+  <footer class="bg-surface bg-[url('/wp-uploads/2020/07/page-header-box-03.png')] text-muted dark:bg-none">
     <div class="ms-[10%] me-[5%] flex pt-[25px] pb-6 max-md:mx-4 max-md:flex-col max-md:gap-6">
       <!-- Latest tech posts -->
       <div class="basis-[30.4%] md:me-[2.97%]">

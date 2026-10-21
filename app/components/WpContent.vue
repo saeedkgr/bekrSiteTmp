@@ -91,7 +91,7 @@ function onClick(e: MouseEvent) {
   }
   if (a.target === '_blank' || a.hasAttribute('download')) return
   const href = a.getAttribute('href')
-  if (!href || !href.startsWith('/') || href.startsWith('//') || href.startsWith('/wp-content/')) return
+  if (!href || !href.startsWith('/') || href.startsWith('//') || href.startsWith('/wp-uploads/')) return
   e.preventDefault()
   router.push(href)
 }

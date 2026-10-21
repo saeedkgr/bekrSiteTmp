@@ -26,9 +26,9 @@ export default defineNuxtConfig({
       // Applies the saved color theme before first paint (see composables/useSiteTheme.ts).
       script: [{ innerHTML: `try{var t=localStorage.getItem('bp-theme');if(t&&t!=='bekr')document.documentElement.dataset.theme=t}catch(e){}`, tagPriority: 'critical' }],
       link: [
-        { rel: 'icon', href: '/wp-content/uploads/2019/07/cropped-LOGO-Right-Blue-1-32x32.png', sizes: '32x32' },
-        { rel: 'icon', href: '/wp-content/uploads/2019/07/cropped-LOGO-Right-Blue-1-192x192.png', sizes: '192x192' },
-        { rel: 'apple-touch-icon', href: '/wp-content/uploads/2019/07/cropped-LOGO-Right-Blue-1-180x180.png' },
+        { rel: 'icon', href: '/wp-uploads/2019/07/cropped-LOGO-Right-Blue-1-32x32.png', sizes: '32x32' },
+        { rel: 'icon', href: '/wp-uploads/2019/07/cropped-LOGO-Right-Blue-1-192x192.png', sizes: '192x192' },
+        { rel: 'apple-touch-icon', href: '/wp-uploads/2019/07/cropped-LOGO-Right-Blue-1-180x180.png' },
       ],
     },
   },

@@ -24,7 +24,9 @@ export function lightboxImage(a: Element): LightboxImage | null {
   try {
     const bytes = Uint8Array.from(atob(encoded), c => c.charCodeAt(0))
     const { url } = JSON.parse(new TextDecoder().decode(bytes))
-    return { url: new URL(url, location.origin).pathname, title: a.getAttribute('data-elementor-lightbox-title') || '' }
+    // The URL is the original one; uploads are served from /wp-uploads/.
+    const path = new URL(url, location.origin).pathname.replace(/^\/wp-content\/uploads\//, '/wp-uploads/')
+    return { url: path, title: a.getAttribute('data-elementor-lightbox-title') || '' }
   } catch { return null }
 }
 
