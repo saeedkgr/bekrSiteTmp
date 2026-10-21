@@ -127,3 +127,42 @@ and the client logos, with no failed requests. Its layout measures the same as b
 **Why it stays:** 7 pages still contain its grid markup (`pt-cv-wrapper`, `pt-cv-content-item`, `pt-cv-pagination`
 and so on) in their `html`, and `legacy.css` styles that grid with the plugin's CSS and loads its Glyphicons font.
 Removing it would break the layout of those grids.
+
+## 6. elementor: kept, its script replaced
+
+**Why it stays:** 129 pages and posts are built with Elementor. Their markup and the per-page Elementor CSS
+(`/wp-content/uploads/elementor/css/post-N.css` plus the widget stylesheets in the plugin folder) still draw them.
+
+**What was broken:** the rebuild never loads Elementor's JavaScript, and three features depend on it.
+
+| Feature | Pages | What happened without the script |
+|---------|-------|----------------------------------|
+| Entrance animations (`fadeIn`, `fadeInUp`, `zoomIn`) | 19 | The element kept `elementor-invisible` (`visibility: hidden`), leaving blank gaps |
+| Image carousel (Swiper) | 73 | Static row: the first 3 images, the rest cut off, no arrows, dots or autoplay |
+| Lightbox | 37 (140 links) | The link pointed at `/` or another page, so clicking an image left the page |
+
+**Changes**
+
+- `app/components/WpContent.vue` now redoes those three features after the WordPress HTML is mounted:
+  - **Animations:** each `.elementor-invisible` element is watched with an `IntersectionObserver`. When it
+    scrolls into view, the class is removed and a Tailwind animation is added (`animate-wp-fade-in`,
+    `animate-wp-fade-in-up`, `animate-wp-zoom-in`, defined in `app/assets/css/main.css`). Elementor's
+    `animated-fast` / `animated-slow` speeds and `_animation_delay` are kept. With "reduce motion" turned on,
+    the element just appears (`motion-safe:`).
+  - **Carousels:** each `.elementor-widget-image-carousel` is read (images, captions, links, and the widget's
+    `data-settings`: slides to show, arrows/dots, loop, autoplay speed, pause on hover/interaction), and its
+    Swiper markup is replaced by `app/components/WpCarousel.vue`, a Nuxt UI `UCarousel` rendered there with a
+    `Teleport`. It shows 1 slide on phones, up to 2 on tablets and the widget's own count on desktop.
+  - **Lightbox:** the full-size image URL is decoded from each link's `data-e-action-hash`, the link's `href`
+    is set to it (so it also works without JavaScript), and clicking opens `app/components/WpLightbox.vue`,
+    a Nuxt UI `UModal`. Links that share a slideshow id open as one gallery, with arrows and dots.
+- `app/utils/elementor.ts`: helpers that read Elementor settings, carousel slides and lightbox images.
+- Theme colors: arrows use the `primary` color (the theme's brand color), dots use `brand-200` / `deep-600` with
+  `brand-500` for the current one, and the popup uses `bg-surface`, `text-ink` and brand/deep borders, so all of
+  it follows the selected theme and dark mode.
+
+**Verification:** `npm run generate` builds without errors, and `npm run check` matches the page text of all
+774 pages (the same 7 missing files as before, which are also missing on the live site). In the browser:
+"زبان بدن" reveals its hidden images and text as they scroll in and its carousel runs with arrows and dots;
+"برگه های مالیاتی ابلاغ شده" opens its 6 images as one gallery popup; both checked in light (default theme)
+and dark (sunset theme).

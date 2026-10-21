@@ -80,6 +80,17 @@
   --color-muted: var(--tone-muted);
 }
 
+/* Entrance animations for Elementor widgets (applied by WpContent.vue). Durations match Elementor's "normal" speed. */
+@theme {
+  --animate-wp-fade-in: wp-fade-in 1.25s ease both;
+  --animate-wp-fade-in-up: wp-fade-in-up 1.25s ease both;
+  --animate-wp-zoom-in: wp-zoom-in 1.25s ease both;
+
+  @keyframes wp-fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes wp-fade-in-up { from { opacity: 0; transform: translate3d(0, 2.5rem, 0); } to { opacity: 1; transform: none; } }
+  @keyframes wp-zoom-in { from { opacity: 0; transform: scale3d(0.3, 0.3, 0.3); } 50% { opacity: 1; } to { transform: none; } }
+}
+
 :root {
   /* Default theme, taken from the original site: teal #33bb9d (mint #63c6ae for hovers) on navy #001c54. */
   --seed-brand: #33bb9d;
