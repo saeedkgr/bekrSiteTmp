@@ -27,8 +27,10 @@ Nuxt 4.6 needs Node.js 22.21 or newer.
 - **Original styles**: the theme, Elementor and plugin stylesheets are bundled into
   `app/assets/css/wp-content-view-legacy.css` inside a CSS cascade layer named `legacy`, declared below Tailwind's
   `utilities`, so the content looks exactly as before while Tailwind classes always win. `main.css` imports it, so
-  Vite bundles it with the app CSS, together with Elementor's icon fonts (`app/assets/fonts/eicons/`,
-  `app/assets/fonts/font-awesome/`). Per-page Elementor CSS is loaded per route.
+  Vite bundles it with the app CSS, together with the plugins' fonts (`app/assets/fonts/eicons/`,
+  `font-awesome/`, `glyphicons/`). Elementor's widget stylesheets are bundled into `app/assets/css/wp-elementor-widgets.css`
+  in an `elementor` layer above the app's content styles. Nothing from `wp-content/plugins` is served from `public/`;
+  only the per-post Elementor CSS (`wp-content/uploads/elementor/css/`) is still loaded per route.
 - **Data**: one JSON file per URL in `public/_data/routes/` (named by an FNV-1a hash of the path, see
   `app/utils/routeId.ts`), plus `site.json` (menu, footer) and `search.json` (`/?s=` search).
 - **Redirects**: old URLs the WordPress site redirected are in `data/redirects.json` and become Nuxt

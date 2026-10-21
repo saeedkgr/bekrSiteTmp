@@ -250,8 +250,8 @@
 
 @font-face {
   font-family: Glyphicons Halflings;
-  src: url("/wp-content/plugins/content-views-query-and-display-post-page/public/assets/fonts/glyphicons-halflings-regular.eot");
-  src: url("/wp-content/plugins/content-views-query-and-display-post-page/public/assets/fonts/glyphicons-halflings-regular.eot") format("embedded-opentype"), url("/wp-content/plugins/content-views-query-and-display-post-page/public/assets/fonts/glyphicons-halflings-regular.woff2") format("woff2"), url("/wp-content/plugins/content-views-query-and-display-post-page/public/assets/fonts/glyphicons-halflings-regular.woff") format("woff"), url("/wp-content/plugins/content-views-query-and-display-post-page/public/assets/fonts/glyphicons-halflings-regular.ttf") format("truetype"), url("/wp-content/plugins/content-views-query-and-display-post-page/public/assets/fonts/glyphicons-halflings-regular.svg") format("svg");
+  src: url("../fonts/glyphicons/glyphicons-halflings-regular.eot");
+  src: url("../fonts/glyphicons/glyphicons-halflings-regular.eot") format("embedded-opentype"), url("../fonts/glyphicons/glyphicons-halflings-regular.woff2") format("woff2"), url("../fonts/glyphicons/glyphicons-halflings-regular.woff") format("woff"), url("../fonts/glyphicons/glyphicons-halflings-regular.ttf") format("truetype"), url("../fonts/glyphicons/glyphicons-halflings-regular.svg") format("svg");
 }
 
 .pt-cv-wrapper .glyphicon {
@@ -20734,6 +20734,20 @@ h1.entry-title {
   unicode-range: U+??, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+@font-face {
+  font-family: "Font Awesome 5 Brands";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("../fonts/font-awesome/fa-brands-400.eot");
+  src: url("../fonts/font-awesome/fa-brands-400.eot") format("embedded-opentype"), url("../fonts/font-awesome/fa-brands-400.woff2") format("woff2"), url("../fonts/font-awesome/fa-brands-400.woff") format("woff"), url("../fonts/font-awesome/fa-brands-400.ttf") format("truetype"), url("../fonts/font-awesome/fa-brands-400.svg") format("svg");
+}
+
+.fab {
+  font-family: "Font Awesome 5 Brands";
+  font-weight: 400;
+}
+
 .fa, .fab, .fad, .fal, .far, .fas {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -26817,20 +26831,6 @@ h1.entry-title {
   margin: 0;
   position: static;
   overflow: visible;
-}
-
-@font-face {
-  font-family: "Font Awesome 5 Brands";
-  font-style: normal;
-  font-weight: 400;
-  font-display: block;
-  src: url("../fonts/font-awesome/fa-brands-400.eot");
-  src: url("../fonts/font-awesome/fa-brands-400.eot") format("embedded-opentype"), url("../fonts/font-awesome/fa-brands-400.woff2") format("woff2"), url("../fonts/font-awesome/fa-brands-400.woff") format("woff"), url("../fonts/font-awesome/fa-brands-400.ttf") format("truetype"), url("../fonts/font-awesome/fa-brands-400.svg") format("svg");
-}
-
-.fab {
-  font-family: "Font Awesome 5 Brands";
-  font-weight: 400;
 }
 
 @font-face {

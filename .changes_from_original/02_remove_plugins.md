@@ -218,3 +218,31 @@ as `/legacy.css`. Elementor's icon fonts (eicons and Font Awesome) were served f
 theme's own `/wp-content/themes/...` URLs, which stay in `public/` and load at runtime). `npm run check` still matches
 the text of all 774 pages. On "زبان بدن" the Instagram icon draws with Font Awesome, and the eicons and Font Awesome
 fonts load from `app/assets/fonts/` with no failed requests.
+
+## 9. remove plugins elementor and content-views from public
+
+**Before:** `public/wp-content/plugins/` still held `elementor/` (widget and animation CSS, Swiper, three scripts)
+and `content-views-query-and-display-post-page/` (`cv.css`, `cv.js`, the Glyphicons font). Pages linked 24 of
+Elementor's stylesheets one by one, and the legacy bundle loaded Glyphicons from the content-views folder.
+
+**After:** nothing under `wp-content/plugins/` is copied to `public/` any more; `public/wp-content/` holds only
+`themes/` and `uploads/`.
+
+- Elementor's widget and animation stylesheets are bundled into `app/assets/css/wp-elementor-widgets.css`, imported
+  by `main.css`. It sits in a new `elementor` cascade layer between `components` and `utilities`
+  (`@layer theme, base, legacy, components, elementor, utilities`, in `main.css` and in the head of `nuxt.config.ts`).
+  That keeps the old order: these rules still beat the theme CSS and the app's content styles, and still lose to the
+  per-post Elementor CSS, which stays linked per page from `wp-content/uploads/elementor/css/`.
+- Font Awesome's stylesheets stay in the legacy bundle, next to Elementor's base styles, so `.elementor-icon i` still
+  wins over `.fab` as on the original site.
+- Swiper's stylesheets are dropped (`WpCarousel.vue` replaced the carousels), and none of Elementor's scripts are
+  needed (`WpContent.vue` does their work).
+- The Glyphicons font moved to `app/assets/fonts/glyphicons/` (5 files), and the content-views grid CSS was already in
+  the legacy bundle. `cv.js` was never loaded.
+- `tools/import.mjs`: `isPluginFile` keeps the whole `wp-content/plugins/` tree out of `public/`, `BUNDLED_STYLES` lists
+  Elementor's mirrored stylesheets, and pages no longer get plugin stylesheet links (122 route files changed).
+
+**Verification:** computed styles (size, weight, line height, colors, spacing, display, borders) of every element in
+the content area match the previous build exactly on 6 pages covering image boxes, video, alerts, social icons, a
+content-views grid and an image gallery. `npm run generate` builds without errors, `npm run check` matches the text of
+all 774 pages, and the built site has no `wp-content/plugins/` folder.
