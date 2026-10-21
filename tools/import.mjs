@@ -78,7 +78,7 @@ const decodeEntities = s => s
 const strip = s => decodeEntities(s.replace(/<[^>]+>/g, '')).replace(/\s+/g, ' ').trim()
 
 // WordPress plugins the rebuild does not use: their files are not copied and their stylesheets are not loaded.
-const UNUSED_PLUGINS = ['animate-it', 'carousel-slider', 'post-slider-and-carousel']
+const UNUSED_PLUGINS = ['animate-it', 'carousel-slider', 'post-slider-and-carousel', 'smart-slider-3']
 const UNUSED_PLUGIN = new RegExp(`^/wp-content/plugins/(${UNUSED_PLUGINS.join('|')})(/|$)`)
 
 // Per-page styles: stylesheet links (local path) and inline <style> blocks, minus the globally bundled ones.
@@ -96,6 +96,8 @@ function pageStyles(html, globalLinks) {
   for (const m of html.matchAll(/<style([^>]*)>([\s\S]*?)<\/style>/g)) {
     const id = attr(m[1], 'id')
     if (id && GLOBAL_STYLE_IDS.has(id)) continue
+    // Smart Slider 3 writes each slider's CSS inline; the home page slider is now HomePage.vue.
+    if (/^n2-ss-/.test(attr(m[1], 'data-related') || '')) continue
     if (/img:is\(\[sizes="auto"/.test(m[2])) continue
     inline.push(rewrite(m[2].trim()))
   }
@@ -370,7 +372,6 @@ const slideLayers = [...sliderHtml.matchAll(/<div data-[^>]*data-slide-public-id
   }
 })
 const slides = slideBgs.map((b, i) => ({ ...b, ...slideLayers[i] }))
-const sliderCss = rewrite(((/<style data-related="n2-ss-11">([\s\S]*?)<\/style>/.exec(home)) || [])[1] || '')
 
 const products = [...homeContent.matchAll(/<figure class="wp-block-image size-large productlist">([\s\S]*?)<\/figure>/g)].map(m => {
   const img = /<img[^>]*>/.exec(m[1])[0]
@@ -397,7 +398,7 @@ const homeRoute = index['/']
 const { html: _homeHtml, ...homeData } = JSON.parse(await read(join(OUT, 'routes', homeRoute.id + '.json')))
 await addRoute('/', 'home', {
   ...homeData,
-  sections: { slides, sliderCss, headings, products, latest, carouselConf, clients },
+  sections: { slides, headings, products, latest, carouselConf, clients },
 })
 
 // ---------- site ----------
