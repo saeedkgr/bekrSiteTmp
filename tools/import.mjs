@@ -78,7 +78,7 @@ const decodeEntities = s => s
 const strip = s => decodeEntities(s.replace(/<[^>]+>/g, '')).replace(/\s+/g, ' ').trim()
 
 // WordPress plugins the rebuild does not use: their files are not copied and their stylesheets are not loaded.
-const UNUSED_PLUGINS = ['animate-it', 'carousel-slider']
+const UNUSED_PLUGINS = ['animate-it', 'carousel-slider', 'post-slider-and-carousel']
 const UNUSED_PLUGIN = new RegExp(`^/wp-content/plugins/(${UNUSED_PLUGINS.join('|')})(/|$)`)
 
 // Per-page styles: stylesheet links (local path) and inline <style> blocks, minus the globally bundled ones.

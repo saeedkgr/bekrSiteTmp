@@ -63,3 +63,27 @@ strip at the bottom of the home page. Its folder held 2 files (96 KB): `assets/c
 | `public/wp-content/plugins/carousel-slider/` | Deleted |
 | `public/legacy.css` | Regenerated without the plugin's CSS (about 1,350 lines) |
 | `public/_data/routes/2a0c975e.json` | Regenerated without `sections.clientsHtml` |
+
+## 3. remove plugin post-slider-and-carousel
+
+**What it was:** "Post Slider and Carousel", an Owl Carousel slider. On the original site it drew the
+"latest posts" carousel on the home page. Its folder held 5 files (65 KB): `owl.carousel.min.css`,
+`psac-public.css`, `bg.png`, `owl.carousel.min.js` and `psac-public.js`.
+
+**Checks**
+
+- No file in `app/`, `server/`, `data/` or `nuxt.config.ts` loads its script or stylesheet, and no route links it.
+- Its classes (`psac-*`, `owl-carousel`) appeared only in the home page markup, which is no longer kept.
+  `HomePage.vue` draws the latest posts with its own `UCarousel` from `sections.latest`.
+- `tools/import.mjs` still reads the carousel's autoplay setting (`sections.carouselConf`) and the post list from
+  the mirrored HTML, so the home page carousel keeps the same timing. Neither needs the plugin's files.
+- The only file outside the plugin that pointed into it was `legacy.css` (its `bg.png`), and that rule came from
+  the plugin's own stylesheet.
+
+**Changes**
+
+| File | Change |
+|------|--------|
+| `tools/import.mjs` | `post-slider-and-carousel` added to `UNUSED_PLUGINS` |
+| `public/wp-content/plugins/post-slider-and-carousel/` | Deleted |
+| `public/legacy.css` | Regenerated without the plugin's CSS (about 990 lines) |
