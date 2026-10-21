@@ -21,12 +21,11 @@ export default defineNuxtConfig({
     head: {
       htmlAttrs: { lang: 'fa-IR', dir: 'rtl' },
       meta: [{ name: 'viewport', content: 'width=device-width' }],
-      // Declares the layer order before any stylesheet loads, so /legacy.css lands below Tailwind's base and utilities.
+      // Declares the layer order before any stylesheet loads, so the legacy layer lands below Tailwind's base and utilities.
       style: [{ innerHTML: '@layer theme, base, legacy, components, utilities;', tagPriority: 'critical' }],
       // Applies the saved color theme before first paint (see composables/useSiteTheme.ts).
       script: [{ innerHTML: `try{var t=localStorage.getItem('bp-theme');if(t&&t!=='bekr')document.documentElement.dataset.theme=t}catch(e){}`, tagPriority: 'critical' }],
       link: [
-        { rel: 'stylesheet', href: '/legacy.css', tagPriority: 'high' },
         { rel: 'icon', href: '/wp-content/uploads/2019/07/cropped-LOGO-Right-Blue-1-32x32.png', sizes: '32x32' },
         { rel: 'icon', href: '/wp-content/uploads/2019/07/cropped-LOGO-Right-Blue-1-192x192.png', sizes: '192x192' },
         { rel: 'apple-touch-icon', href: '/wp-content/uploads/2019/07/cropped-LOGO-Right-Blue-1-180x180.png' },

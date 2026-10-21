@@ -51,7 +51,7 @@ Build an exact replica of the WordPress site https://www.bekrpardazan.com with t
   `search.json` (search index for `/?s=`).
 - Rebuilds archives like WordPress does: 5 posts per page, newest first, and category
   archives include posts filed under child categories.
-- Bundles the original theme, Elementor and plugin CSS into `public/legacy.css`, cleaned of
+- Bundles the original theme, Elementor and plugin CSS into `app/assets/css/wp-content-view-legacy.css`, cleaned of
   malformed rules and wrapped in a CSS cascade layer called `legacy`.
 - Copies all uploads and theme files to `public/wp-content/`.
 - Copies the four standalone `page-sideBar.php` pages (`/sidebar/`, `/sidebar14/`,

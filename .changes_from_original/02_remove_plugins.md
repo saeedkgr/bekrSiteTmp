@@ -193,3 +193,28 @@ to Elementor. Its folder held 71 files (4.2 MB), mostly woff2 fonts (IRANYekanX,
 **Verification:** on "زبان بدن" every piece of text in the content area uses Vazirmatn, icons keep Font Awesome,
 the IRANYekan font is no longer downloaded and no request fails. `npm run generate` builds without errors, and
 `npm run check` still matches the text of all 774 pages.
+
+## 8. move legacy.css and Elementor's icon fonts into app/assets
+
+**Before:** `tools/import.mjs` wrote the bundled WordPress CSS to `public/legacy.css`, and `nuxt.config.ts` linked it
+as `/legacy.css`. Elementor's icon fonts (eicons and Font Awesome) were served from
+`public/wp-content/plugins/elementor/assets/lib/`, and 77 pages linked Font Awesome's three stylesheets one by one.
+
+**After**
+
+- The bundle is written to `app/assets/css/wp-content-view-legacy.css` and imported by `app/assets/css/main.css`
+  (`@import "./wp-content-view-legacy.css";`). Vite now bundles it with the app CSS; the `<link href="/legacy.css">`
+  in `nuxt.config.ts` is gone. It is still inside the `legacy` layer, so the cascade order is unchanged.
+- Elementor's fonts are copied to their own folders: `app/assets/fonts/eicons/` (5 files) and
+  `app/assets/fonts/font-awesome/` (10 files: brands and solid, each in eot, svg, ttf, woff and woff2). The bundled CSS
+  points at them with `url("../fonts/eicons/...")` and `url("../fonts/font-awesome/...")`, and Vite emits them with
+  hashed names in `_nuxt/`.
+- Font Awesome's `fontawesome.min.css`, `brands.min.css` and `solid.min.css` are bundled too, so no page links them
+  any more (77 route files changed). Since their CSS and fonts are both bundled, the `lib/eicons/` and
+  `lib/font-awesome/` folders are no longer copied to `public/wp-content/plugins/elementor/`.
+- `README.md` and `migrate_fromWO.md` point at the new path.
+
+**Verification:** `npm run generate` builds without errors (its "didn't resolve at build time" warnings are the
+theme's own `/wp-content/themes/...` URLs, which stay in `public/` and load at runtime). `npm run check` still matches
+the text of all 774 pages. On "زبان بدن" the Instagram icon draws with Font Awesome, and the eicons and Font Awesome
+fonts load from `app/assets/fonts/` with no failed requests.

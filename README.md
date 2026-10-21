@@ -9,7 +9,7 @@ and upload from the original site is included, at the same URLs.
 | Command | What it does |
 | --- | --- |
 | `npm run mirror` | Downloads the live site into `mirror/` (REST API data, rendered HTML of every URL, all `wp-content` files, and old-URL redirects). |
-| `npm run import` | Turns `mirror/` into the app's data: `public/_data/`, `public/wp-content/`, `public/legacy.css`, `data/`. |
+| `npm run import` | Turns `mirror/` into the app's data: `public/_data/`, `public/wp-content/`, `app/assets/css/wp-content-view-legacy.css`, the icon fonts in `app/assets/fonts/`, `data/`. |
 | `npm run dev` | Development server on http://localhost:3000. |
 | `npm run generate` | Builds the static site into `.output/public` (deploy that folder to any static host). |
 | `npm run preview` | Serves `.output/public` on http://localhost:4000. |
@@ -24,9 +24,11 @@ Nuxt 4.6 needs Node.js 22.21 or newer.
   (`HomePage.vue`, using `UCarousel`), post/page/archive templates and pagination.
 - **Page content**: the body of each page/post is the HTML WordPress rendered (Elementor and block
   editor output), captured by the mirror and shown with `WpContent.vue`.
-- **Original styles**: the theme, Elementor and plugin stylesheets are bundled into `public/legacy.css`
-  inside a CSS cascade layer named `legacy`, declared below Tailwind's `utilities`, so the content looks
-  exactly as before while Tailwind classes always win. Per-page Elementor CSS is loaded per route.
+- **Original styles**: the theme, Elementor and plugin stylesheets are bundled into
+  `app/assets/css/wp-content-view-legacy.css` inside a CSS cascade layer named `legacy`, declared below Tailwind's
+  `utilities`, so the content looks exactly as before while Tailwind classes always win. `main.css` imports it, so
+  Vite bundles it with the app CSS, together with Elementor's icon fonts (`app/assets/fonts/eicons/`,
+  `app/assets/fonts/font-awesome/`). Per-page Elementor CSS is loaded per route.
 - **Data**: one JSON file per URL in `public/_data/routes/` (named by an FNV-1a hash of the path, see
   `app/utils/routeId.ts`), plus `site.json` (menu, footer) and `search.json` (`/?s=` search).
 - **Redirects**: old URLs the WordPress site redirected are in `data/redirects.json` and become Nuxt
