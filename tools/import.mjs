@@ -77,6 +77,9 @@ const decodeEntities = s => s
   .replace(/&nbsp;/g, ' ').replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
 const strip = s => decodeEntities(s.replace(/<[^>]+>/g, '')).replace(/\s+/g, ' ').trim()
 
+// WordPress plugins the rebuild does not use: their files are not copied and their stylesheets are not loaded.
+const UNUSED_PLUGIN = /^\/wp-content\/plugins\/animate-it(\/|$)/
+
 // Per-page styles: stylesheet links (local path) and inline <style> blocks, minus the globally bundled ones.
 const GLOBAL_STYLE_IDS = new Set(['wp-emoji-styles-inline-css', 'classic-theme-styles-inline-css', 'global-styles-inline-css'])
 function pageStyles(html, globalLinks) {
@@ -85,7 +88,7 @@ function pageStyles(html, globalLinks) {
     const href = attr(m[0], 'href')
     if (!href || !/bekrpardazan/.test(href)) continue
     const p = new URL(href, BASE).pathname
-    if (globalLinks.has(p)) continue
+    if (globalLinks.has(p) || UNUSED_PLUGIN.test(p)) continue
     links.push(decodePath(p))
   }
   const inline = []
@@ -125,7 +128,9 @@ const home = await read(htmlFile(BASE + '/'))
 const GLOBAL_LINK_ORDER = []
 for (const m of home.matchAll(/<link[^>]+rel=['"]stylesheet['"][^>]*>/g)) {
   const href = attr(m[0], 'href')
-  if (href && /bekrpardazan/.test(href)) GLOBAL_LINK_ORDER.push(new URL(href, BASE).pathname)
+  if (!href || !/bekrpardazan/.test(href)) continue
+  const p = new URL(href, BASE).pathname
+  if (!UNUSED_PLUGIN.test(p)) GLOBAL_LINK_ORDER.push(p)
 }
 // Elementor base styles are used by almost every inner page; bundle them too.
 const sample = await read(htmlFile(posts[0].link))
@@ -135,6 +140,7 @@ for (const m of sample.matchAll(/<link[^>]+rel=['"]stylesheet['"][^>]*>/g)) {
   const p = new URL(href, BASE).pathname
   // Per-post Elementor CSS stays per page, except the site-wide kit (post-2602).
   if (/\/uploads\/elementor\/css\/post-\d+\.css$/.test(p) && !/post-2602\.css$/.test(p)) continue
+  if (UNUSED_PLUGIN.test(p)) continue
   if (!GLOBAL_LINK_ORDER.includes(p)) GLOBAL_LINK_ORDER.push(p)
 }
 const globalLinks = new Set(GLOBAL_LINK_ORDER)
@@ -386,7 +392,8 @@ const clientsHtml = clientsStart > 0 ? homeContent.slice(clientsStart) : ''
 const clients = [...clientsHtml.matchAll(/<img[^>]*>/g)].map(m => ({ image: rewrite(attr(m[0], 'src') || attr(m[0], 'data-src') || ''), alt: decodeEntities(attr(m[0], 'alt') || ''), href: null })).filter(c => c.image && !c.image.startsWith('data:'))
 
 const homeRoute = index['/']
-const homeData = JSON.parse(await read(join(OUT, 'routes', homeRoute.id + '.json')))
+// HomePage.vue renders only `sections`, so the raw page HTML is dropped.
+const { html: _homeHtml, ...homeData } = JSON.parse(await read(join(OUT, 'routes', homeRoute.id + '.json')))
 await addRoute('/', 'home', {
   ...homeData,
   sections: { slides, sliderCss, headings, products, latest, carouselConf, clients, clientsHtml: rewrite(clientsHtml) },
@@ -435,7 +442,11 @@ await save(join(DATA, 'index.json'), index)
 
 // ---------- static files ----------
 await rm(join(ROOT, 'public/wp-content'), { recursive: true, force: true })
-await cp(join(M, 'files/wp-content'), join(ROOT, 'public/wp-content'), { recursive: true })
+const WP_CONTENT = join(M, 'files/wp-content')
+await cp(WP_CONTENT, join(ROOT, 'public/wp-content'), {
+  recursive: true,
+  filter: src => !UNUSED_PLUGIN.test('/wp-content' + src.slice(WP_CONTENT.length).replaceAll('\\', '/')),
+})
 // Point absolute URLs inside the copied stylesheets (per-post Elementor CSS, font CSS) at this site.
 async function* walkFiles(d) { for (const e of await readdir(d, { withFileTypes: true })) { const p = join(d, e.name); e.isDirectory() ? yield* walkFiles(p) : yield p } }
 for await (const f of walkFiles(join(ROOT, 'public/wp-content'))) {
