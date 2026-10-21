@@ -53,7 +53,7 @@ Build an exact replica of the WordPress site https://www.bekrpardazan.com with t
   archives include posts filed under child categories.
 - Bundles the original theme, Elementor and plugin CSS into `app/assets/css/wp-content-view-legacy.css`, cleaned of
   malformed rules and wrapped in a CSS cascade layer called `legacy`.
-- Copies all uploads and theme files to `public/wp-content/`.
+- Copies all uploads to `public/wp-content/uploads/` (theme and plugin files are bundled from `app/assets/` instead).
 - Copies the four standalone `page-sideBar.php` pages (`/sidebar/`, `/sidebar14/`,
   `/sidebar-v14/`, `/sidebar-old/`) as-is.
 - Writes `data/index.json` (all paths, for prerendering and `/sitemap.xml`) and

@@ -82,15 +82,44 @@ const strip = s => decodeEntities(s.replace(/<[^>]+>/g, '')).replace(/\s+/g, ' '
 const UNUSED_PLUGINS = ['animate-it', 'carousel-slider', 'post-slider-and-carousel', 'smart-slider-3', 'persian-elementor']
 const UNUSED_PLUGIN = new RegExp(`^/wp-content/plugins/(${UNUSED_PLUGINS.join('|')})(/|$)`)
 
-// Plugin fonts live in app/assets/fonts/<name>/ and are bundled by Vite with the legacy CSS.
+// Plugin and theme fonts live in app/assets/fonts/<name>/ and are bundled by Vite with the legacy CSS.
 const FONT_DIRS = {
   '/wp-content/plugins/elementor/assets/lib/eicons/fonts/': 'eicons',
   '/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/': 'font-awesome',
   '/wp-content/plugins/content-views-query-and-display-post-page/public/assets/fonts/': 'glyphicons',
+  '/wp-content/themes/interface/font-awesome/fonts/': 'font-awesome-4',
+  '/wp-content/themes/interface-newChild/fonts/': 'interface-child',
 }
-// Every plugin stylesheet a page used is bundled (below), its fonts are in app/assets/fonts and no plugin script is
-// loaded, so nothing under wp-content/plugins is copied to public/.
-const isPluginFile = p => /^\/wp-content\/plugins(\/|$)/.test(p)
+// Every plugin and theme stylesheet a page used is bundled (below), their fonts are in app/assets/fonts and none of
+// their scripts is loaded, so nothing under wp-content/plugins or wp-content/themes is copied to public/.
+const isPluginFile = p => /^\/wp-content\/(plugins|themes)(\/|$)/.test(p)
+
+// The real name of `rel` under `dir`, matched without regard to letter case (the theme CSS asks for "bmitra.ttf",
+// the file is "BMitra.ttf"; Linux builds need the exact name). null when there is no such file.
+function realFile(dir, rel) {
+  const out = []
+  for (const part of rel.split('/')) {
+    const name = existsSync(dir) && readdirSync(dir).find(n => n.toLowerCase() === part.toLowerCase())
+    if (!name) return null
+    dir = join(dir, name)
+    out.push(name)
+  }
+  return out.join('/')
+}
+
+// Points moved fonts at app/assets/fonts (relative to app/assets/css) and drops the @font-face src entries whose file
+// was never on the server, so Vite can resolve every url() it is given.
+function movedFontUrls(css) {
+  return css
+    .replace(/(,\s*)?url\(\s*(['"]?)([^'")]+)\2\s*\)(\s*format\([^)]*\))?/g, (m, comma, _q, url, format) => {
+      const from = Object.keys(FONT_DIRS).find(d => url.startsWith(d))
+      if (!from) return m
+      const file = realFile(join(M, 'files', decodePath(from)), decodePath(url.slice(from.length).split(/[?#]/)[0]))
+      return file ? `${comma ?? ''}url("../fonts/${FONT_DIRS[from]}/${file}")${format ?? ''}` : ''
+    })
+    .replace(/src:\s*,\s*/g, 'src: ')
+    .replace(/src:\s*(;|})/g, '$1')
+}
 // Elementor's widget, animation and Font Awesome stylesheets were linked page by page. They only style Elementor's
 // own classes, so they are bundled once: Font Awesome into the legacy bundle, the rest into
 // app/assets/css/wp-elementor-widgets.css. Swiper's are left out: WpCarousel.vue replaces the carousels.
@@ -179,10 +208,9 @@ async function loadCss(p) {
   // Absolute-ize relative url()s so they resolve against /public
   css = css.replace(/url\(\s*(['"]?)(?!data:|https?:|\/)([^'")]+)\1\s*\)/g, (_, q, u) => `url("${new URL(u, 'http://x' + dir).pathname}")`)
   css = rewrite(css)
-  // Point the moved icon fonts at app/assets/fonts, relative to app/assets/css.
-  for (const [from, name] of Object.entries(FONT_DIRS)) css = css.replaceAll(`url("${from}`, `url("../fonts/${name}/`)
   // Fix broken font format hints in the child theme so browsers pick the right file
   css = css.replace(/format\('otf'\)/g, "format('opentype')").replace(/format\('ttf'\)/g, "format('truetype')")
+  css = movedFontUrls(css)
   // @import inside a file cannot be layered; inline-drop them (only google fonts in practice)
   css = css.replace(/@import[^;]+;/g, '')
   return `\n/* ${p} */\n${css}\n`
