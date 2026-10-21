@@ -2,7 +2,7 @@
 //   public/_data/routes/<id>.json  one file per public URL (page, post, archive), fetched by the app
 //   data/index.json         path -> route id + type (prerender list, sitemap)
 //   public/_data/site.json  menu and footer widgets; public/_data/search.json: search index
-//   public/wp-content/...   uploads, theme/plugin css, fonts, images
+//   public/wp-content/uploads/  uploads: images, documents and the per-post Elementor CSS
 //   app/assets/css/wp-content-view-legacy.css  original WordPress/Elementor/theme CSS in the low-priority "legacy" layer
 //   app/assets/fonts/eicons/, app/assets/fonts/font-awesome/  Elementor's icon fonts, bundled with that CSS
 // Usage: node tools/import.mjs
@@ -502,7 +502,7 @@ await save(join(DATA, 'redirects.json'), Object.fromEntries(Object.entries(redir
 
 // Links to parts of the old server that were never WordPress (e.g. /wiki/) keep pointing at the live domain.
 {
-  const known = p => index[p] || redirects[p] || existsSync(join(M, 'files', p)) || p.startsWith('/wp-content/') || p.startsWith('/wp-includes/') || p.startsWith('/emoji/')
+  const known = p => index[p] || redirects[p] || existsSync(join(M, 'files', p)) || p.startsWith('/wp-content/') || p.startsWith('/emoji/')
   for (const { id } of Object.values(index)) {
     const f = join(OUT, 'routes', id + '.json')
     const route = await json(f)
@@ -548,7 +548,9 @@ for await (const f of walkFiles(join(ROOT, 'public/wp-content'))) {
   const out = rewrite(css)
   if (out !== css) await writeFile(f, out)
 }
-if (existsSync(join(M, 'files/wp-includes'))) await cp(join(M, 'files/wp-includes'), join(ROOT, 'public/wp-includes'), { recursive: true })
+// wp-includes is not copied: its block-library CSS is in the legacy bundle, and its jQuery and MediaElement files
+// (WordPress's audio/video player) are not used by any page.
+await rm(join(ROOT, 'public/wp-includes'), { recursive: true, force: true })
 if (existsSync(join(M, 'files/emoji'))) await cp(join(M, 'files/emoji'), join(ROOT, 'public/emoji'), { recursive: true })
 
 for (const [path, raw] of standalone) await save(join(ROOT, 'public', path, 'index.html'), raw)
