@@ -41,9 +41,10 @@ watch(() => route.fullPath, () => { open.value = false })
             >
               {{ item.label }}
             </component>
+            <!-- The ::before strip bridges the 10px gap under the link, so the pointer can reach the submenu without leaving the hover area. -->
             <ul
               v-if="item.children.length"
-              class="invisible absolute top-[60px] right-0 z-50 w-[190px] border-t-4 border-mint bg-surface opacity-0 shadow-[0_4px_8px_rgba(0,0,0,0.2)] group-hover:visible group-hover:opacity-100"
+              class="before:absolute before:inset-x-0 before:bottom-full before:h-[14px] before:content-[''] invisible absolute top-[60px] right-0 z-50 w-[190px] border-t-4 border-mint bg-surface opacity-0 shadow-[0_4px_8px_rgba(0,0,0,0.2)] group-hover:visible group-hover:opacity-100"
             >
               <li v-for="child in item.children" :key="child.label">
                 <NuxtLink
