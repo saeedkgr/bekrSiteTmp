@@ -118,3 +118,12 @@ so git never tracked them.
 
 **Verification:** in the running site the home page draws the hero slider, the 8 products, the latest posts
 and the client logos, with no failed requests. Its layout measures the same as before any plugin was removed.
+
+## 5. kept: content-views-query-and-display-post-page
+
+**What it is:** "Content Views", which draws post grids inside pages. Its folder holds 7 files (280 KB):
+`cv.css`, `cv.js` and the Glyphicons font in five formats.
+
+**Why it stays:** 7 pages still contain its grid markup (`pt-cv-wrapper`, `pt-cv-content-item`, `pt-cv-pagination`
+and so on) in their `html`, and `legacy.css` styles that grid with the plugin's CSS and loads its Glyphicons font.
+Removing it would break the layout of those grids.
