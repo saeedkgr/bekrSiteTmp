@@ -166,3 +166,30 @@ Removing it would break the layout of those grids.
 "زبان بدن" reveals its hidden images and text as they scroll in and its carousel runs with arrows and dots;
 "برگه های مالیاتی ابلاغ شده" opens its 6 images as one gallery popup; both checked in light (default theme)
 and dark (sunset theme).
+
+## 7. remove plugin persian-elementor
+
+**What it was:** "Persian Elementor", which adds Persian fonts, a Jalali date picker and the `efaicons` icon font
+to Elementor. Its folder held 71 files (4.2 MB), mostly woff2 fonts (IRANYekanX, Estedad, Vazirmatn, Shabnam and others).
+
+**Checks**
+
+- Its date picker (`jalalidatepicker.min.js`, `datepicker-init.js`, `datepicker-custom.css`) is not loaded by the
+  app, and no page has a date field.
+- No page uses `efaicons` icons.
+- Its only remaining use was fonts: the per-page Elementor CSS sets `font-family: "IRANYekan"` (and Roboto,
+  Playfair Display and others) on headings and text, and `legacy.css` bundled the plugin's `@font-face` rules,
+  so Elementor headings still drew in IRANYekan instead of Vazirmatn.
+
+**Changes**
+
+| File | Change |
+|------|--------|
+| `app/assets/css/main.css` | All text inside Elementor content (`#main .elementor`) uses Vazirmatn. The per-page Elementor CSS is unlayered, so the rule needs `!important` in the `components` layer; icon fonts are left alone |
+| `tools/import.mjs` | `persian-elementor` added to `UNUSED_PLUGINS` |
+| `public/wp-content/plugins/persian-elementor/` | Deleted |
+| `public/legacy.css` | Regenerated without the plugin's CSS and `@font-face` rules (about 1,400 lines) |
+
+**Verification:** on "زبان بدن" every piece of text in the content area uses Vazirmatn, icons keep Font Awesome,
+the IRANYekan font is no longer downloaded and no request fails. `npm run generate` builds without errors, and
+`npm run check` still matches the text of all 774 pages.

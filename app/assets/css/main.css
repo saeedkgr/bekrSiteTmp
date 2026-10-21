@@ -131,6 +131,11 @@ body {
   #main :where(*:not(i, .fa, [class^="fa-"], [class*=" fa-"], [class*="eicon"], [class*="genericon"], [class*="dashicons"], [class*="glyphicon"], [class^="icon-"], [class*=" icon-"])) {
     font-family: var(--font-sans);
   }
+  /* Elementor's per-page CSS is unlayered and names its own fonts (IRANYekan, Roboto, ...), so only !important
+     in this layer can replace them. Icons keep their font. */
+  #main .elementor :where(*:not(i, svg, svg *, .fa, .fab, .fas, .far, [class^="fa-"], [class*=" fa-"], [class*="eicon"], [class*="efa-"])) {
+    font-family: var(--font-sans) !important;
+  }
   #main :where(p, li, dd, dt, td, th, blockquote, label) {
     font-size: var(--text-body);
     line-height: var(--text-body--line-height);
