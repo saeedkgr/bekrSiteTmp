@@ -23,7 +23,8 @@ const overlayWidths = [1160, 1180, 1190, 1180, 1160]
       :ui="{ item: 'basis-full ps-0', container: 'ms-0', prev: 'sm:start-[15px] start-[15px]', next: 'sm:end-[15px] end-[15px]' }"
       class="relative w-full"
     >
-      <div class="relative aspect-[1366/693] w-full overflow-hidden bg-surface">
+      <!-- Smart Slider scaled a 1200x693 canvas down on narrow screens and kept it at 693px high on wider ones. -->
+      <div class="relative aspect-[1200/693] max-h-[693px] w-full overflow-hidden bg-surface">
         <img
           :src="item.image"
           :alt="item.alt"
@@ -37,7 +38,7 @@ const overlayWidths = [1160, 1180, 1190, 1180, 1160]
           width="3200"
           height="1800"
           class="absolute top-1/2 left-1/2 h-auto -translate-x-1/2 -translate-y-1/2"
-          :style="{ width: `min(${overlayWidths[index]}px, ${overlayWidths[index]! / 13.66}%)` }"
+          :style="{ width: `min(${overlayWidths[index]}px, ${overlayWidths[index]! / 12}%)` }"
           :loading="index ? 'lazy' : 'eager'"
         >
       </div>
@@ -115,7 +116,7 @@ const overlayWidths = [1160, 1180, 1190, 1180, 1160]
       :autoplay="{ delay: 5000, stopOnMouseEnter: true }"
       :ui="{ item: 'basis-full min-[576px]:basis-1/2 min-[1024px]:basis-1/3 min-[1280px]:basis-1/4 min-[1536px]:basis-1/5 ps-[5px]', container: '-ms-[5px]' }"
     >
-      <img :src="item.image" :alt="item.alt" class="h-[69px] w-full object-fill" loading="lazy">
+      <img :src="item.image" :alt="item.alt" width="248" height="51" class="h-auto w-full" loading="lazy">
     </UCarousel>
 
     <div class="h-10" />
