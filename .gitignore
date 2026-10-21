@@ -6,3 +6,5 @@ dist
 *.log
 # Raw download of the WordPress site (~300 MB); recreate with npm run mirror
 mirror/
+# Deploy settings with the cPanel API token (see .env.deploy.example)
+.env.deploy

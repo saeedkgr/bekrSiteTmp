@@ -8,6 +8,7 @@
     "dev": "nuxt dev",
     "build": "nuxt build",
     "generate": "nuxt generate",
+    "deploy": "node scripts/deploy.mjs",
     "preview": "node tools/serve-static.mjs 4000",
     "check": "node tools/check-links.mjs && node tools/compare-text.mjs",
     "postinstall": "nuxt prepare"

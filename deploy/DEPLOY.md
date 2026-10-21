@@ -87,9 +87,47 @@ laid out now, and how to redeploy or roll back.
 Each step was checked with a small live sample (home page, 40 pages, 25 assets, 6 old-URL
 redirects, the 404 page, `/old/`, `/old/wp-admin/`) and in a browser.
 
-## Redeploying the Nuxt site
+## Redeploying the Nuxt site with `pnpm run deploy`
 
-1. `npm run generate`
+[`scripts/deploy.mjs`](../scripts/deploy.mjs) does the whole redeploy from this PC.
+
+Setup, once: copy [`.env.deploy.example`](../.env.deploy.example) to `.env.deploy` and put a
+cPanel API token in `CPANEL_TOKEN` (cPanel → Security → Manage API Tokens). `.env.deploy` is in
+`.gitignore`; never commit it. Git for Windows must be installed: the script packs with its GNU
+`tar`, because Windows' own `tar.exe` crashes on the Persian folder names.
+
+Use `pnpm run deploy`, not `pnpm deploy`: `pnpm deploy` is a built-in pnpm command.
+
+| Command | What it does |
+| --- | --- |
+| `pnpm run deploy` | Build, pack, upload and swap in the new build |
+| `pnpm run deploy --skip-build` | The same, with the build already in `.output/public` |
+| `pnpm run deploy --dry-run` | Build and pack only, without contacting the server |
+| `pnpm run deploy --rollback` | Put the previous build back |
+
+What it does, about a dozen API calls, one at a time with a 1.5 s pause (`DEPLOY_PAUSE_MS`)
+so the firewall doesn't block the PC:
+
+1. `pnpm generate`, then packs `.output/public` without `wp-uploads/` into a `.tar.gz` in the
+   PC's temp folder (about 10 MB).
+2. Creates `~/deploy` and `~/deploy-prev` (outside `public_html`, so not on the web) if they
+   are missing, and empties them. This deletes the build before the current one.
+3. Checks the disk quota and stops if the new build does not fit. The live site is untouched.
+4. Uploads the archive to `~/deploy` in one request and extracts it into `~/deploy/new`, then
+   checks it has `index.html` and `_nuxt/`.
+5. Swaps: moves `public_html/new` to `~/deploy-prev/new`, then `~/deploy/new` to
+   `public_html/new`. The site only changes here, for a second or two. If the second move fails,
+   the previous build is moved back.
+6. Deletes the archive on the server and on the PC, and checks that the home page returns 200.
+
+`--rollback` swaps `public_html/new` and `~/deploy-prev/new` the same way. Keeping the previous
+build costs about 47 MB of the disk quota.
+
+The steps below are the same deploy done by hand.
+
+## Redeploying by hand
+
+1. `pnpm generate`
 2. Pack the build without uploads (Git Bash):
    `cd .output/public && tar --format=gnu --exclude=./wp-uploads -czf ../../nuxt-site.tar.gz .`
 3. Upload `nuxt-site.tar.gz` to `/home/bekrpard` (cPanel File Manager, or UAPI
