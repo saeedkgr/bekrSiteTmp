@@ -39,3 +39,27 @@ scripts (`animo.min.js`, `edsanimate.js`, `edsanimate.site.js`, `jquery.ba-throt
 
 **Verification:** `npm run import` regenerates only the files above. The home page still shows the slider
 and all 8 products, with no failed requests.
+
+## 2. remove plugin carousel-slider
+
+**What it was:** "Carousel Slider", an Owl Carousel slider. On the original site it drew the client logos
+strip at the bottom of the home page. Its folder held 2 files (96 KB): `assets/css/frontend.css` and
+`assets/js/frontend.js`.
+
+**Checks**
+
+- No file in `app/`, `server/`, `data/` or `nuxt.config.ts` loads its script or stylesheet, and no route links it.
+- Its classes (`carousel-slider`, `carousel-slider__item` and so on) appeared only in the home route's
+  `sections.clientsHtml`. `HomePage.vue` draws the client logos with its own `UCarousel` from `sections.clients`
+  and never renders `clientsHtml`.
+- The generic class names its CSS also styles (`active`, `summary`, `hidden`) are only styled under
+  `.carousel-slider` or `.mfp-content`, which no page uses.
+
+**Changes**
+
+| File | Change |
+|------|--------|
+| `tools/import.mjs` | `carousel-slider` added to `UNUSED_PLUGINS`; the unused `sections.clientsHtml` is no longer saved |
+| `public/wp-content/plugins/carousel-slider/` | Deleted |
+| `public/legacy.css` | Regenerated without the plugin's CSS (about 1,350 lines) |
+| `public/_data/routes/2a0c975e.json` | Regenerated without `sections.clientsHtml` |

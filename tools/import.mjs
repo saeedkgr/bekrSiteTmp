@@ -78,7 +78,8 @@ const decodeEntities = s => s
 const strip = s => decodeEntities(s.replace(/<[^>]+>/g, '')).replace(/\s+/g, ' ').trim()
 
 // WordPress plugins the rebuild does not use: their files are not copied and their stylesheets are not loaded.
-const UNUSED_PLUGIN = /^\/wp-content\/plugins\/animate-it(\/|$)/
+const UNUSED_PLUGINS = ['animate-it', 'carousel-slider']
+const UNUSED_PLUGIN = new RegExp(`^/wp-content/plugins/(${UNUSED_PLUGINS.join('|')})(/|$)`)
 
 // Per-page styles: stylesheet links (local path) and inline <style> blocks, minus the globally bundled ones.
 const GLOBAL_STYLE_IDS = new Set(['wp-emoji-styles-inline-css', 'classic-theme-styles-inline-css', 'global-styles-inline-css'])
@@ -396,7 +397,7 @@ const homeRoute = index['/']
 const { html: _homeHtml, ...homeData } = JSON.parse(await read(join(OUT, 'routes', homeRoute.id + '.json')))
 await addRoute('/', 'home', {
   ...homeData,
-  sections: { slides, sliderCss, headings, products, latest, carouselConf, clients, clientsHtml: rewrite(clientsHtml) },
+  sections: { slides, sliderCss, headings, products, latest, carouselConf, clients },
 })
 
 // ---------- site ----------
