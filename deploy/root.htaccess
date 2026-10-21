@@ -1,0 +1,76 @@
+# Static Nuxt site (www.bekrpardazan.com), stored in /new/ but served from the root.
+# The old WordPress site lives in /old/.
+AddDefaultCharset UTF-8
+DirectoryIndex index.html index.php
+ErrorDocument 404 /new/404.html
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+
+# Use www.bekrpardazan.com as the one address.
+RewriteCond %{HTTP_HOST} ^bekrpardazan\.com$ [NC]
+RewriteRule ^(.*)$ https://www.bekrpardazan.com/$1 [R=301,L]
+
+# Images of the Nuxt site come from the WordPress uploads folder (no second copy on disk).
+RewriteRule ^wp-uploads/(.*)$ /old/wp-content/uploads/$1 [L]
+
+# Links that still point at WordPress files go to the WordPress copy in /old/.
+RewriteRule ^(wp-content|wp-includes)/(.*)$ /old/$1/$2 [R=301,L]
+RewriteRule ^(wp-admin(/.*)?|wp-login\.php|wp-json/.*|xmlrpc\.php|feed/?.*)$ /old/$1 [R=302,L,QSA]
+
+# Direct links to /new/... go to the same address without /new/.
+RewriteCond %{THE_REQUEST} \s/new(/|\s|\?)
+RewriteRule ^new/?(.*)$ /$1 [R=301,L]
+
+# Folders need a trailing slash; add it here so the redirect never shows /new/.
+RewriteCond %{REQUEST_URI} !^/new/
+RewriteCond %{DOCUMENT_ROOT}/new/$1 -d
+RewriteRule ^(.*[^/])$ /$1/ [R=301,L]
+
+# Anything that exists in /new/ is served from there.
+RewriteCond %{REQUEST_URI} !^/new/
+RewriteCond %{DOCUMENT_ROOT}/new/$1 -f [OR]
+RewriteCond %{DOCUMENT_ROOT}/new/$1 -d
+RewriteRule ^(.*)$ new/$1 [L]
+</IfModule>
+
+<IfModule mod_mime.c>
+AddCharset UTF-8 .atom .css .js .json .rss .vtt .xml
+AddType image/avif avif
+AddType application/manifest+json webmanifest
+</IfModule>
+
+<IfModule mod_expires.c>
+ExpiresActive on
+ExpiresDefault "access plus 1 month"
+ExpiresByType text/html "access plus 0 seconds"
+ExpiresByType application/json "access plus 0 seconds"
+ExpiresByType text/xml "access plus 0 seconds"
+ExpiresByType application/xml "access plus 0 seconds"
+ExpiresByType image/gif "access plus 4 months"
+ExpiresByType image/png "access plus 4 months"
+ExpiresByType image/jpeg "access plus 4 months"
+ExpiresByType image/webp "access plus 4 months"
+ExpiresByType image/avif "access plus 4 months"
+ExpiresByType image/svg+xml "access plus 4 months"
+ExpiresByType font/woff2 "access plus 1 year"
+ExpiresByType font/woff "access plus 1 year"
+ExpiresByType font/ttf "access plus 1 year"
+ExpiresByType text/css "access plus 1 year"
+ExpiresByType application/javascript "access plus 1 year"
+ExpiresByType text/javascript "access plus 1 year"
+</IfModule>
+
+# Nuxt's hashed build files never change.
+<IfModule mod_headers.c>
+<If "%{REQUEST_URI} =~ m#^/_nuxt/#">
+Header set Cache-Control "public, max-age=31536000, immutable"
+</If>
+Header append Vary Accept-Encoding
+</IfModule>
+
+<IfModule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/javascript text/javascript application/json application/xml image/svg+xml font/ttf
+</IfModule>
